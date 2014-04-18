@@ -3,14 +3,42 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	
 		<title>Index</title>
+		<link rel="stylesheet" href="../themes/default/style.css" type="text/css" media="screen" charset="utf-8">
 		<script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../jquery.upyun.js" type="text/javascript" charset="utf-8"></script>
 		
-		<style type="text/css" media="screen">
-			
-		</style>
 	</head>
 	<body>
-		<input type="text" name="picture" value="">
+		<input type="text" class="upyun" name="picture" value="">
+		<!-- <div class="mc-dialog">
+			<div class="mc-header">
+				又拍文件管理
+				<span class="mc-close">X</span>
+			</div>
+			<div class="mc-body">
+				<ul>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
+				</ul>
+			</div>
+			<div class="mc-footer"> 
+				<button class="mc-btn-ok">确定</button>
+				<button class="mc-btn-cancel">取消</button>
+			</div>
+		</div> -->
+		<!-- <div class="mc-cover"> </div> -->
+		<script type="text/javascript" charset="utf-8">
+			$('.upyun').mc({
+				api:'/test/media-center-for-upyun/php/api.php'
+			});
+		</script>
 	</body>
 </html>
