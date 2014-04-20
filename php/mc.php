@@ -1,5 +1,8 @@
 <?php
 
+define('MC_OK','0');
+define('MC_ERROR','1');
+
 /**
  * 
  **/
@@ -11,14 +14,20 @@ class mc {
 
 	protected $path = '/';
 
-	function __construct() {
+	protected $size;
+
+	function __construct($bucket,$name,$pwd,$host,$size) {
 		include('upyun.class.php');
-		$this->upyun = new UpYun('bitbucket','hwz','bitbucket');
-		$this->host = 'http://bitbucket.b0.upaiyun.com';
+
+		$this->upyun = new UpYun($bucket,$name,$pwd);
+		$this->host = $host;
+		$this->size = $size;
+		session_start();
+		// $_SESSION['list'] = false;
 	}
 
 	/**
-	 * undocumented function
+	 * 处理
 	 *
 	 * @return void
 	 * @author hwz
@@ -51,13 +60,56 @@ class mc {
 	 **/
 	protected function action_list(){
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '/';
-		$list = $this->upyun->getList($this->path);
-		foreach ($list as &$pic) {
-			if ($pic['type'] == 'file') {
-				$pic['url'] = $this->host . $this->path . $pic['name'];
+		if ($_SESSION['list']) {
+			$list = $_SESSION['list'];
+		}else{
+			$list = $this->upyun->getList($this->path);
+			foreach ($list as &$pic) {
+				if ($pic['type'] == 'file') {
+					$pic['url'] = $this->host . $this->path . $pic['name'] . $this->size;
+				}
 			}
+			$_SESSION['list'] = $list;
 		}
 		echo json_encode($list);
+	}
+
+	/**
+	 * 上传文件
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	protected function action_upload() {
+		$response = array(
+			'error'=>MC_OK,
+			'msg'=>'上传成功!',
+		);
+		if (empty($_FILES)) {
+			$response['msg'] = '文件列表为空!';
+			$response['error'] = MC_ERROR;
+		}
+		$file = $_FILES['file'];
+		$response['data'] = array(
+			'url'=>$this->host,
+			'type'=>$file['type'],
+		);
+
+		try{
+
+			$response['data'] = $this->upyun->writeFile($this->path . $file['name'],
+				file_get_contents($file['tmp_name']));
+			$_SESSION['list'] = 0;
+
+		}catch(UpYunException $e){
+
+			$response['error'] = MC_ERROR;
+			$response['msg'] = $e->getMessage();
+			$response['data'] = '';
+
+		}
+		echo json_encode($response);
+		die();
 	}
 }
 
