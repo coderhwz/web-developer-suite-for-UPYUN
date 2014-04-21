@@ -99,7 +99,8 @@ class mc {
 
 			$response['data'] = $this->upyun->writeFile($this->path . $file['name'],
 				file_get_contents($file['tmp_name']));
-			$_SESSION['list'] = 0;
+			$response['data']['url']= $this->host . $this->path . $file['name'] . $this->size;
+			$_SESSION['list'] = false;
 
 		}catch(UpYunException $e){
 

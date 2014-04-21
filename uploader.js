@@ -9,16 +9,19 @@ mcUploader.prototype = {
 	init:function(){
 		var _this = this;
 		this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');
-		this.holder.after(this.uploadPanel);
+		// this.holder.after(this.uploadPanel);
 		this.holder.click(function(){
 			_this.uploadInput.click();
 		});
 		_this.uploadInput.on('change',function(){
 			console.log('change');
 			var formData = new FormData();
-			$.each(_this.opts.post,function(key,val){
-				formData.append(key,val);
-			})
+			if (_this.opts.post != undefined) {
+				$.each(_this.opts.post,function(key,val){
+					console.log(key,val);
+					formData.append(key,val);
+				})
+			};
 			formData.append('file',this.files[0]);
 			$.ajax({
 				url: '/media-center-for-upyun/php/api.php?action=upload', 
@@ -32,7 +35,10 @@ mcUploader.prototype = {
 				},
 				success: function(result) {
 					console.log($.ajaxSettings.xhr().upload);
-					console.log(result);
+					result = $.parseJSON(result);
+					if (_this.opts.onSuccess) {
+						_this.opts.onSuccess(result);
+					};
 				},
 				data: formData,
 				cache: false,

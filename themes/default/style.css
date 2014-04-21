@@ -61,3 +61,6 @@
 	text-align:center;
 	line-height:20px;
 }
+.mc-selected{
+	background-color:red;
+}

@@ -2,7 +2,7 @@
 (function($){
 
 	function upyun(element,options){
-		console.log(options);
+		var _this = this;
 		if (window._upanel == undefined) {
 			window._upanel = new mc({
 				api:options.api,
@@ -12,6 +12,9 @@
 		console.log(options);
 		if (options.panel) {
 			this.element.click(function(){
+				window._upanel.addEvent('onOK',function(urls){
+					_this.element.val(urls[0]);
+				});
 				window._upanel.open();
 			});
 		}else{
