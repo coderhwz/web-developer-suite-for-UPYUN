@@ -5,10 +5,13 @@
 		<title>Index</title>
 		<link rel="stylesheet" href="../themes/default/style.css" type="text/css" media="screen" charset="utf-8">
 		<script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../uploader.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../media-center.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../jquery.upyun.js" type="text/javascript" charset="utf-8"></script>
 		
 	</head>
 	<body>
+		<input type="text" class="upyun" name="picture" value="">
 		<input type="text" class="upyun" name="picture" value="">
 		<!-- <div class="mc-dialog">
 			<div class="mc-header">
@@ -36,9 +39,9 @@
 		</div> -->
 		<!-- <div class="mc-cover"> </div> -->
 		<script type="text/javascript" charset="utf-8">
-			$('.upyun').mc({
+			$('.upyun').upyun({
 				api:'/media-center-for-upyun/php/api.php',
-				title:'又拍图片中心'
+				panel:true
 			});
 		</script>
 	</body>
