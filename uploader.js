@@ -1,6 +1,7 @@
 function mcUploader(element,options){
 	this.holder = $(element);
 	this.opts = {
+		post:{}
 	};
 	this.opts = $.extend(this.opts,options,{});
 	this.init();
@@ -24,7 +25,7 @@ mcUploader.prototype = {
 			};
 			formData.append('file',this.files[0]);
 			$.ajax({
-				url: '/media-center-for-upyun/php/api.php?action=upload', 
+				url: this.opts.api, 
 				type: 'POST',
 				xhr: function() {  
 					var _xhr = $.ajaxSettings.xhr();

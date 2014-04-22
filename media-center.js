@@ -1,6 +1,7 @@
 function mc(options){
 	this.opts = {
 		cover:true,
+		title:'又拍图片中心',
 		label_cancel:"取消",
 		label_ok:"确定",
 		label_upload:"上传文件",
@@ -37,7 +38,7 @@ mc.prototype={
 			return ;
 		};
 
-		this.panel = $('<div class="mc-panel"></div>');
+		this.panel = $('<div class="hide mc-panel"></div>');
 		this.panel.appendTo(this._body);
 		this.mcheader = $('<div class="mc-header"/>');
 		this.mcheader.appendTo(this.panel);
@@ -48,7 +49,7 @@ mc.prototype={
 		this.mcbody.appendTo(this.panel);
 
 		this.uploadPanel = $('<div class="mc-upload-panel" />');
-		this.uploadPanel.appendTo(this.mcbody).text('点击或拖过来'); 
+		this.uploadPanel.appendTo(this.mcbody).text('点击此处或将文件拖拽该面板'); 
 
 
 		this.picsList = $('<ul class="mc-list" />');
@@ -56,6 +57,7 @@ mc.prototype={
 
 
 		new mcUploader(this.uploadPanel[0],{
+			api:this.opts.api + '?action=upload',
 			onSuccess:function(result){
 				var li = $('<li><img src="'+result.data.url+'" /></li>').prependTo(_this.picsList).click(function(){
 					$(this).toggleClass('mc-selected');
@@ -73,18 +75,24 @@ mc.prototype={
 		this.btnCancel.appendTo(this.mcfooter);
 
 		this.btnClose.appendTo(this.mcheader);
+
 		this.btnClose.click(function(){
-			console.log('close');
+			_this.close();
+			$('li',_this.picsList).removeClass('mc-selected');
 		});
+
+		this.btnCancel.click(function(){
+			_this.close();
+			$('li',_this.picsList).removeClass('mc-selected');
+		})
 		this.btnOk.click(function(){
 			var urls = [];
 			$('.mc-selected img',_this.picsList).each(function(index,value){
 				urls.push(this.src);
 			});
-			if (_this.fireEvent('onOK',urls)){
-				_this.close();
-				$('li',_this.picsList).removeClass('mc-selected');
-			};
+			_this.fireEvent('onOK',urls);
+			_this.close();
+			$('li',_this.picsList).removeClass('mc-selected');
 		});
 
 	},
@@ -119,35 +127,21 @@ mc.prototype={
 		};
 	},
 
-	addEvent:function(event,callback){
-		console.log('add event',this._events);
-		if (this._events[event] == undefined){
-			this._events[event] = [];
-		}
-		this._events[event].push(callback);
+	fireEvent:function(event,params){
+		if (this.instance.hasOwnProperty(event)) {
+			console.log(event,'fired');
+			return this.instance[event](params);
+		};
 	},
 
-	fireEvent:function(event,params){
-		if (this._events[event] && this._events[event].length > 0) {
-			for (var i = 0; i < this._events[event].length; i++) {
-				var callback = this._events[event][i];
-				if (callback){
-					var result = callback(params);
-					if (result === false) {
-						return false
-					};
-				}
-			};
-		};
-		return true;
-	},
 	close:function(){
 		if (this.opts.cover) {
 			this.cover.hide();
 		};
 		this.panel.hide();
 	},
-	open:function(){
+	open:function(instanceOpts){
+		this.instance = instanceOpts;
 		if (this.opts.cover) {
 			this.cover.show();
 		};

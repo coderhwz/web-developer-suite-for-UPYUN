@@ -8,17 +8,21 @@
 				api:options.api,
 			});
 		};
+
 		this.element = $(element);
-		console.log(options);
 		if (options.panel) {
 			this.element.click(function(){
-				window._upanel.addEvent('onOK',function(urls){
-					_this.element.val(urls[0]);
+				window._upanel.open({
+					onOK:function(urls){
+						_this.element.val(urls[0]);
+						$('#holder').attr('src',urls[0]);
+					}
 				});
-				window._upanel.open();
 			});
 		}else{
-			this.element.upload5();
+			new mcUploader({
+				api:options.api + '?action=upload',
+			});
 		};
 	}
 	$.fn.upyun = function (options) {

@@ -37,6 +37,7 @@
 .mc-body{
 	height:300px;
 	overflow-y:auto;
+	/* background-color:; */
 }
 .mc-footer button{
 	float:right;
@@ -46,6 +47,7 @@
 	width:10px;
 	float:right;
 	margin-right:5px;
+	cursor:pointer;
 }
 .hide{
 	display:none;

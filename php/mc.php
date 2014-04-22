@@ -16,6 +16,8 @@ class mc {
 
 	protected $size;
 
+	private $_events;
+
 	function __construct($bucket,$name,$pwd,$host,$size) {
 		include('upyun.class.php');
 
@@ -34,6 +36,7 @@ class mc {
 	 **/
 	public function handle() {
 		$this->dispatcher();
+		// var_dump(is_callable($this->_events['preUpload']));
 	}
 
 	/**
@@ -63,7 +66,9 @@ class mc {
 		if ($_SESSION['list']) {
 			$list = $_SESSION['list'];
 		}else{
+			$this->_fire('preGetList');
 			$list = $this->upyun->getList($this->path);
+			$this->_fire('postGetList',$list);
 			foreach ($list as &$pic) {
 				if ($pic['type'] == 'file') {
 					$pic['url'] = $this->host . $this->path . $pic['name'] . $this->size;
@@ -97,9 +102,11 @@ class mc {
 
 		try{
 
+			$this->_fire('preUpload');
 			$response['data'] = $this->upyun->writeFile($this->path . $file['name'],
 				file_get_contents($file['tmp_name']));
 			$response['data']['url']= $this->host . $this->path . $file['name'] . $this->size;
+			$this->_fire('postUpload');
 			$_SESSION['list'] = false;
 
 		}catch(UpYunException $e){
@@ -111,6 +118,32 @@ class mc {
 		}
 		echo json_encode($response);
 		die();
+	}
+
+	/**
+	 * 添加事件处理回调
+	 *
+	 * @param $namw string 事件名称
+	 * @param $callback mixed array,string,closure均可
+	 * @return void
+	 * @author hwz
+	 **/
+	public function when($name,$callback) {
+		if ($callback) {
+			$this->_events[$name] = $callback;
+		}
+	}
+
+	/**
+	 * 触发事件 
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	private function _fire($mixed,$params = null) {
+		if (is_callable($name)) {
+			call_user_func_array($mixed,$params);
+		}
 	}
 }
 
