@@ -14,6 +14,7 @@ function mc(options){
 	this.init();
 	this.setupPanel();
 	this.loadData();
+	this.eventHandle();
 }
 mc.prototype={
 	init:function(){
@@ -21,7 +22,6 @@ mc.prototype={
 		if (this.opts.cover) {
 			this.setupCover();
 		};
-		this.eventHandle();
 	},
 	setupCover:function(){
 		if ($('.mc-cover').length > 0) {
@@ -38,7 +38,7 @@ mc.prototype={
 			return ;
 		};
 
-		this.panel = $('<div class="hide mc-panel"></div>');
+		this.panel = $('<div class="mc-panel"></div>');
 		this.panel.appendTo(this._body);
 		this.mcheader = $('<div class="mc-header"/>');
 		this.mcheader.appendTo(this.panel);
@@ -59,7 +59,7 @@ mc.prototype={
 		new mcUploader(this.uploadPanel[0],{
 			api:this.opts.api + '?action=upload',
 			onSuccess:function(result){
-				var li = $('<li><img src="'+result.data.url+'" /></li>').prependTo(_this.picsList).click(function(){
+				var li = $('<li><span style="vertical-align:middle;"><img src="'+result.data.url+'" /></span></li>').prependTo(_this.picsList).click(function(){
 					$(this).toggleClass('mc-selected');
 					_this.fireEvent('onSelected',this); 
 				});
@@ -104,12 +104,31 @@ mc.prototype={
 			data = $.parseJSON(data);
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].type == 'file') {
-					// _this.picsList.append();
-					$('<li><img src="'+data[i].url+'" /></li>').appendTo(_this.picsList).click(function(){
-						$(this).toggleClass('mc-selected');
-						_this.fireEvent('onSelected',this);
-					});
-					
+					var li = $('<li />').appendTo(_this.picsList);
+					var img = new Image();
+					img.onload= function(){
+
+						var percent = this.naturalWidth / this.naturalHeight;
+						var newWidth=0,newHeight=0;
+						if (this.naturalWidth > this.naturalHeight) {
+							newWidth = 120;
+							newHeight = newWidth / percent;
+							if (newHeight > 74) {
+								newHeight = 74;
+								newWidth = newHeight * percent;
+							}; 
+						}else{
+							newHeight = 74;
+							newWidth = newHeight * percent;
+							if (newWidth > 120) {
+								newHeight = newWidth / percent;
+							};
+						};
+					   this.width = newWidth;
+					   this.height = newHeight;
+					}
+					img.src = data[i].url;
+					li.append(img);
 				};
 			};
 		});
@@ -125,6 +144,10 @@ mc.prototype={
 				_this.close();
 			});
 		};
+		this.mcbody.delegate('li','click',function(){
+			$(this).toggleClass('mc-selected');
+			_this.fireEvent('onSelected',this);
+		})
 	},
 
 	fireEvent:function(event,params){

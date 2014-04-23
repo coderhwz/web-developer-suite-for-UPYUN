@@ -12,11 +12,11 @@
 	filter: alpha(opacity=70);
 }
 .mc-panel{
-	width:600px;
-	/* height:400px; */
+	width:90%;
+	height:90%;
 	margin:0 auto;
 	background-color:#ededed;
-	top:15%;
+	top:2.5%;
 	z-index:999;
 	position:relative;
 }
@@ -65,4 +65,25 @@
 }
 .mc-selected{
 	background-color:red;
+}
+.mc-list li{
+	/* border:1px solid #000; */
+	display:inline-block;
+	width:120px;
+	text-align:center;
+	height:74px;
+	/* line-height:74px; */
+	margin:5px;
+	padding:5px;
+	/* background-image:url("images/wait1.png"); */
+	background-repeat:no-repeat;
+	/* background-attachment:fixed; */
+	background-position:center; 
+	overflow:hidden;
+	/* background-size:70%;  */ /* 在chrome下，设置背景色看起来“无效”*/
+}
+.mc-list li img{
+	/* width:120px; */
+	/* vertical-align:middle; */
+	/* height:110px; */
 }
