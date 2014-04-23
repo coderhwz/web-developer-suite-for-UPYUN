@@ -6,6 +6,8 @@ function mc(options){
 		label_ok:"确定",
 		label_upload:"上传文件",
 		multi:false,
+		imgWidth:120,
+		imgHeight:74,
 	};
 	this._events = {};
 
@@ -47,6 +49,7 @@ mc.prototype={
 
 		this.mcbody = $('<div class="mc-body" />');
 		this.mcbody.appendTo(this.panel);
+		this.mcbody.height(this.panel.height() - 60);
 
 		this.uploadPanel = $('<div class="mc-upload-panel" />');
 		this.uploadPanel.appendTo(this.mcbody).text('点击此处或将文件拖拽该面板'); 
@@ -148,6 +151,17 @@ mc.prototype={
 			$(this).toggleClass('mc-selected');
 			_this.fireEvent('onSelected',this);
 		})
+
+		this.mcbody.delegate('li','dblclick',function(){
+			var url = $(this).find('img').attr('src');
+
+			_this.fireEvent('onOK',[url]);
+			_this.close();
+			$('li',_this.picsList).removeClass('mc-selected');
+		})
+		$(window).resize(function(){
+			_this.mcbody.height(_this.panel.height() - 60);
+		});
 	},
 
 	fireEvent:function(event,params){
