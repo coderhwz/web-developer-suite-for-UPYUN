@@ -108,29 +108,29 @@ mc.prototype={
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].type == 'file') {
 					var li = $('<li />').appendTo(_this.picsList);
-					var img = new Image();
-					img.onload= function(){
 
+					var img = $('<img />');
+					img.attr('src',data[i].url);
+					img.load(function(){
 						var percent = this.naturalWidth / this.naturalHeight;
 						var newWidth=0,newHeight=0;
 						if (this.naturalWidth > this.naturalHeight) {
-							newWidth = 120;
+							newWidth = _this.opts.imgWidth;
 							newHeight = newWidth / percent;
-							if (newHeight > 74) {
-								newHeight = 74;
+							if (newHeight > _this.opts.imgHeight) {
+								newHeight = _this.opts.imgHeight;
 								newWidth = newHeight * percent;
 							}; 
 						}else{
-							newHeight = 74;
+							newHeight = _this.opts.imgHeight;
 							newWidth = newHeight * percent;
-							if (newWidth > 120) {
+							if (newWidth > _this.opts.imgWidth) {
 								newHeight = newWidth / percent;
 							};
 						};
 					   this.width = newWidth;
 					   this.height = newHeight;
-					}
-					img.src = data[i].url;
+					})
 					li.append(img);
 				};
 			};
