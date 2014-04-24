@@ -25,7 +25,7 @@ mcUploader.prototype = {
 			};
 			formData.append('file',this.files[0]);
 			$.ajax({
-				url: this.opts.api, 
+				url: _this.opts.api, 
 				type: 'POST',
 				xhr: function() {  
 					var _xhr = $.ajaxSettings.xhr();

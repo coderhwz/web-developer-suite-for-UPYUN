@@ -121,6 +121,33 @@ class mc {
 	}
 
 	/**
+	 * 删除文件
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	public function action_delete() {
+		$path = $_POST['path'];
+		if ($path) {
+			try{
+				$this->upyun->delete($path);
+				$response['error'] = MC_OK;
+
+			}catch(UpYunException $e){
+				$response['error'] = MC_ERROR;
+				$response['msg'] = $e->getMessage();
+			}
+			echo json_encode($response);
+			die();
+		}
+		echo json_encode(array(
+			'error'=>MC_ERROR,
+			'msg'=>'路径错误！',
+		));
+		die();
+	}
+
+	/**
 	 * 添加事件处理回调
 	 *
 	 * @param $namw string 事件名称
@@ -141,7 +168,7 @@ class mc {
 	 * @author hwz
 	 **/
 	private function _fire($mixed,$params = null) {
-		if (is_callable($name)) {
+		if (is_callable($mixed)) {
 			call_user_func_array($mixed,$params);
 		}
 	}

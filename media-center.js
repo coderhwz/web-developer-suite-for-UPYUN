@@ -13,6 +13,7 @@ function mc(options){
 
 	this.opts = $.extend(this.opts,options,{});
 	this._body = $('body');
+	this.path = '/';
 	this.init();
 	this.setupPanel();
 	this.loadData();
@@ -40,8 +41,8 @@ mc.prototype={
 			return ;
 		};
 
-		this.panel = $('<div class="mc-panel"></div>');
-		this.panel.appendTo(this._body);
+		this.panel = $('<div class="hide mc-panel"></div>');
+		this.panel.appendTo(this.cover);
 		this.mcheader = $('<div class="mc-header"/>');
 		this.mcheader.appendTo(this.panel);
 		this.mcheader.text(this.opts.title);
@@ -49,7 +50,7 @@ mc.prototype={
 
 		this.mcbody = $('<div class="mc-body" />');
 		this.mcbody.appendTo(this.panel);
-		this.mcbody.height(this.panel.height() - 60);
+		// this.mcbody.height(this.panel.height() - 60);
 
 		this.uploadPanel = $('<div class="mc-upload-panel" />');
 		this.uploadPanel.appendTo(this.mcbody).text('点击此处或将文件拖拽该面板'); 
@@ -108,6 +109,7 @@ mc.prototype={
 			for (var i = 0; i < data.length; i++) {
 				if (data[i].type == 'file') {
 					var li = $('<li />').appendTo(_this.picsList);
+					li.append('<a class="mc-del" href="javascript:;" >×</a>');
 
 					var img = $('<img />');
 					img.attr('src',data[i].url);
@@ -131,6 +133,7 @@ mc.prototype={
 					   this.width = newWidth;
 					   this.height = newHeight;
 					})
+					img.attr('data-name',data[i].name);
 					li.append(img);
 				};
 			};
@@ -143,13 +146,32 @@ mc.prototype={
 	eventHandle:function(){
 		var _this = this;
 		if (this.opts.cover) {
-			this.cover.click(function(){
+			this.cover.delegate('.mc-cover','click',function(event){
+				// console.log('log');
 				_this.close();
 			});
+			/* this.cover.click(function(){
+			}); */
 		};
 		this.mcbody.delegate('li','click',function(){
 			$(this).toggleClass('mc-selected');
 			_this.fireEvent('onSelected',this);
+		})
+
+		this.mcbody.delegate('.mc-del','click',function(event){
+			event.preventDefault();
+			var $this = $(this);
+			if (confirm('确定要删除该文件吗？')) {
+				$.post(_this.opts.api + '?action=delete',{path:_this.path + $(this).next().attr('data-name') },function(result){
+					result = $.parseJSON(result);
+					console.log(result);
+					if (result.error == 0) {
+						$this.parent().remove();
+					}else{
+						alert(result.msg);
+					};
+				});
+			};
 		})
 
 		this.mcbody.delegate('li','dblclick',function(){
