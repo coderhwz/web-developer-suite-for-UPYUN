@@ -16,15 +16,17 @@
 	width:90%;
 	height:90%;
 	margin:0 auto;
-	background-color:#ededed;
+	background-color:#fff;
 	top:2.5%;
-	z-index:999;
+	/* z-index:999; */
 	position:relative;
 }
 .mc-header{
 	height:30px;
 	border-bottom:1px solid #000;
 	line-height:30px;
+	padding-left:10px;
+	padding-right:5px;
 }
 .mc-footer{
 	/* position:absolute; */
@@ -83,6 +85,7 @@
 	overflow:hidden;
 	position:relative;
 	/* background-size:70%;  */ /* 在chrome下，设置背景色看起来“无效”*/
+	border-radius:5px;
 }
 .mc-list li a{
 	position:absolute;
@@ -91,10 +94,17 @@
 	font-size:20px;
 }
 .mc-list li:hover{
-	background-color:blue;
+	background-color:#6f5499;
 }
 .mc-list li img{
 	/* width:120px; */
 	/* vertical-align:middle; */
 	/* height:110px; */
+}
+.mc-del{
+	display:none;
+}
+.mc-hover >.mc-del{
+	text-decoration:none;
+	display:block;
 }

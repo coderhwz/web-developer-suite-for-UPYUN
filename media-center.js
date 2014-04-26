@@ -41,7 +41,7 @@ mc.prototype={
 			return ;
 		};
 
-		this.panel = $('<div class="hide mc-panel"></div>');
+		this.panel = $('<div class="mc-panel"></div>');
 		this.panel.appendTo(this.cover);
 		this.mcheader = $('<div class="mc-header"/>');
 		this.mcheader.appendTo(this.panel);
@@ -50,7 +50,7 @@ mc.prototype={
 
 		this.mcbody = $('<div class="mc-body" />');
 		this.mcbody.appendTo(this.panel);
-		// this.mcbody.height(this.panel.height() - 60);
+		console.log(this.panel.height());
 
 		this.uploadPanel = $('<div class="mc-upload-panel" />');
 		this.uploadPanel.appendTo(this.mcbody).text('点击此处或将文件拖拽该面板'); 
@@ -98,6 +98,7 @@ mc.prototype={
 			_this.close();
 			$('li',_this.picsList).removeClass('mc-selected');
 		});
+		this.mcbody.height(this.panel.height() - 60);
 
 	},
 
@@ -113,6 +114,8 @@ mc.prototype={
 
 					var img = $('<img />');
 					img.attr('src',data[i].url);
+					img.attr('alt',data[i].name);
+					img.attr('title',data[i].name);
 					img.load(function(){
 						var percent = this.naturalWidth / this.naturalHeight;
 						var newWidth=0,newHeight=0;
@@ -158,6 +161,13 @@ mc.prototype={
 			_this.fireEvent('onSelected',this);
 		})
 
+		this.mcbody.delegate('li,img','mouseenter',function(){
+			$(this).addClass('mc-hover');
+		})
+		this.mcbody.delegate('li,img','mouseout',function(){
+			$(this).removeClass('mc-hover');
+		})
+
 		this.mcbody.delegate('.mc-del','click',function(event){
 			event.preventDefault();
 			var $this = $(this);
@@ -182,6 +192,7 @@ mc.prototype={
 			$('li',_this.picsList).removeClass('mc-selected');
 		})
 		$(window).resize(function(){
+			console.log(_this.panel.height());
 			_this.mcbody.height(_this.panel.height() - 60);
 		});
 	},

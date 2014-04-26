@@ -2,7 +2,8 @@
 	<head>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	
-		<title>Index</title>
+		<title>又拍云开发者套件-演示</title>
+		<link rel="stylesheet" href="./style.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="../themes/default/style.css" type="text/css" media="screen" charset="utf-8">
 		<script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../uploader.js" type="text/javascript" charset="utf-8"></script>
@@ -16,9 +17,26 @@
 				width:300px;
 			}
 		</style>
-		<input type="text" class="upyun" name="picture" value="">
-		<img id="holder" src="" width="120" />
-		<input type="text" class="upyun" name="picture" value="">
+		<div class="wrapper">
+			<div class="demo-head"><h1>又拍开发者套件演示</h1><a href="#" class="like">喜欢</a></div>
+			<div class="demo-body">
+				<div class="section">
+					<div class="example">
+						<input type="text" class="upyun" name="picture" value="">
+					</div>
+					<div class="code">
+						<pre>
+						</pre>
+						
+					</div>
+				</div>
+				<input type="text" class="upyun" name="picture" value="">
+				<img id="holder" src="" width="120" />
+				<input type="text" class="upyun" name="picture" value="">
+			</div>
+			<div>
+			</div>
+		</div>
 		<!-- <div class="mc-dialog">
 			<div class="mc-header">
 				又拍文件管理
@@ -45,10 +63,10 @@
 		</div> -->
 		<!-- <div class="mc-cover"> </div> -->
 		<script type="text/javascript" charset="utf-8">
-			$('.upyun').upyun({
+			/*$('.upyun').upyun({
 				api:'/media-center-for-upyun/php/api.php',
 				panel:true
-			});
+			});*/
 		</script>
 	</body>
 </html>
