@@ -17,12 +17,12 @@ mcUploader.prototype = {
 		_this.uploadInput.on('change',function(){
 			console.log('change');
 			var formData = new FormData();
-			if (_this.opts.post != undefined) {
+			if (_this.opts.post !== undefined) {
 				$.each(_this.opts.post,function(key,val){
 					console.log(key,val);
 					formData.append(key,val);
-				})
-			};
+				});
+			}
 			formData.append('file',this.files[0]);
 			$.ajax({
 				url: _this.opts.api, 
@@ -39,7 +39,7 @@ mcUploader.prototype = {
 					result = $.parseJSON(result);
 					if (_this.opts.onSuccess) {
 						_this.opts.onSuccess(result);
-					};
+					}
 				},
 				data: formData,
 				cache: false,
@@ -53,6 +53,6 @@ mcUploader.prototype = {
 					_this.holder.text(e.loaded + " / " + e.total);
 				}
 			}
-		})
+		});
 	}
 };

@@ -3,11 +3,11 @@
 
 	function upyun(element,options){
 		var _this = this;
-		if (window._upanel == undefined) {
+		if (window._upanel === undefined) {
 			window._upanel = new mc({
 				api:options.api,
 			});
-		};
+		}
 
 		this.element = $(element);
 		if (options.panel) {
@@ -23,7 +23,7 @@
 			new mcUploader({
 				api:options.api + '?action=upload',
 			});
-		};
+		}
 	}
 	$.fn.upyun = function (options) {
 		return this.each(function () {
