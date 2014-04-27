@@ -216,6 +216,7 @@ mc.prototype={
 			this.cover.show();
 		};
 		this.setupPanel();
+		$(window).resize();
 		this.panel.show();
 	},
 	resize:function(){

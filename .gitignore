@@ -1,3 +1,10 @@
 php/config.php
 *.zip
 images
+example/kindeditor/asp.net/*
+example/kindeditor/asp/*
+example/kindeditor/*
+example/kindeditor/jsp/*
+example/kindeditor/php/*
+example/kindeditor/examples/*
+example/ueditor/php/*

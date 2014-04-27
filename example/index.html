@@ -9,6 +9,12 @@
 		<script src="../uploader.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../media-center.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../jquery.upyun.js" type="text/javascript" charset="utf-8"></script>
+
+		<script src="./ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./ueditor/ueditor.all.min.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="./ueditor/lang/zh-cn/zh-cn.js"></script>
+
+		<script src="./kindeditor/kindeditor-all-min.js" type="text/javascript" charset="utf-8"></script>
 		
 	</head>
 	<body>
@@ -34,6 +40,8 @@
 				<img id="holder" src="" width="120" />
 				<input type="text" class="upyun" name="picture" value="">
 			</div>
+			<textarea name="Name" id="ueditor" rows="8" cols="40"></textarea>
+			<textarea name="Name" id="kindeditor" rows="8" cols="40"></textarea>
 			<div>
 			</div>
 		</div>
@@ -63,10 +71,14 @@
 		</div> -->
 		<!-- <div class="mc-cover"> </div> -->
 		<script type="text/javascript" charset="utf-8">
-			/*$('.upyun').upyun({
+			$('.upyun').upyun({
 				api:'/media-center-for-upyun/php/api.php',
 				panel:true
-			});*/
+			});
+			var editor = UE.getEditor('ueditor')
+			KindEditor.ready(function(K) {
+                window.editor = K.create('#kindeditor');
+			});
 		</script>
 	</body>
 </html>
