@@ -14,7 +14,7 @@ class UpCloud {
 
 	protected $host;
 
-	protected $path = '/';
+	protected $path;
 
 	protected $size;
 
@@ -164,19 +164,10 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	protected function action_upload() {
-		$response = array(
-			'error'=>MC_OK,
-			'msg'=>'上传成功!',
-		);
 		if (empty($_FILES)) {
 			$this->error('文件列表为空!');
 		}
 		$file = $_FILES['file'];
-		$response['data'] = array(
-			'url'=>$this->host,
-			'type'=>$file['type'],
-		);
-
 		try{
 
 			$this->_fire('preUpload');
