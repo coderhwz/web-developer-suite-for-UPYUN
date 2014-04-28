@@ -2,7 +2,8 @@
 
 include('config.php');
 include('mc.php');
-$mc = new mc(BUCKET,NAME,PWD,HOST,SIZE);
-$mc->handle();
+
+$upCloud = new UpCloud(BUCKET,NAME,PWD,HOST,SIZE);
+$upCloud->takeOver();
 
 //End of file 

@@ -167,6 +167,22 @@
 			KindEditor.ready(function(K) {
                 window.editor = K.create('#kindeditor');
 			});*/
+
+$('#demo').upyun({
+	api:'/api.php',  
+	panel:{
+		title:'',
+		logo:'',
+		name:'媒体管理',
+		folder:'true|false',
+		onOK:function(images_with_meta){},
+		onSelect:function(){},
+		onClose:function(){},
+	},
+	sizeLimit:'1000M',
+
+});
 		</script>
+		<input type="text" data-prompt="" name="some_name" value="">
 	</body>
 </html>

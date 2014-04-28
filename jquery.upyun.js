@@ -13,9 +13,8 @@
 		if (options.panel) {
 			this.element.click(function(){
 				window._upanel.open({
-					onOK:function(urls){
-						_this.element.val(urls[0]);
-						$('#holder').attr('src',urls[0]);
+					onOK:function(images){
+						_this.element.val(images[0]);
 					}
 				});
 			});
@@ -33,5 +32,4 @@
 		}); 
     };
 })(jQuery);
-
 

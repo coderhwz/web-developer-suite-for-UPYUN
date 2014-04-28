@@ -1,12 +1,14 @@
 <?php
-
-define('MC_OK','0');
-define('MC_ERROR','1');
-
 /**
- * 
+ * UpKit
+ *
+ * Desc:又拍开发者套件处理，封装所有基本操作
+ *
+ * Author:coderhwz@gmail.com
+ *
  **/
-class mc {
+
+class UpCloud {
 
 	protected $upyun;
 
@@ -18,14 +20,79 @@ class mc {
 
 	private $_events;
 
+	private const SUCCESS = 0;
+
+	private const ERROR = 1;
+
+	private const WARNING = 2;
+
 	function __construct($bucket,$name,$pwd,$host,$size) {
 		include('upyun.class.php');
 
+		// todo 文件类型限制 ，文件大小限制 
 		$this->upyun = new UpYun($bucket,$name,$pwd);
 		$this->host = $host;
 		$this->size = $size;
 		session_start();
 		// $_SESSION['list'] = false;
+	}
+
+	/**
+	 * 响应一个错误,错误响应将立即停止执行
+	 *
+	 * @param $msg string 
+	 * @return void
+	 * @author hwz
+	 **/
+	public function error($msg) {
+		$this->_response(self::ERROR,$msg,$data);
+	}
+
+	/**
+	 * 响应一个警告
+	 *
+	 * @param $msg string 必须
+	 * @return void
+	 * @author hwz
+	 **/
+	public function warning($msg){
+		$this->_response(self::WARNING,$msg,$data);
+	}
+
+	/**
+	 * 响应一个成功提示
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	public function success($msg=null,$data=null){
+		$msg = $msg ? $msg : '操作成功!';
+		$this->_response(self::SUCCESS,$msg,$data);
+	}
+
+	/**
+	 * 发送响应
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	protected function _response($code,$msg,$data=null){
+		$response = array(
+			'error' => $code,
+			'msg' => $msg,
+			'data'=>$data,
+		);
+		die(json_encode($response));
+	}
+
+	/**
+	 * 设置允许的文件类型
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	public function setAllowTypes() {
+
 	}
 
 	/**
@@ -40,7 +107,17 @@ class mc {
 	}
 
 	/**
-	 * undocumented function
+	 * 
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	public function takeOver() {
+		$this->handle();
+	}
+
+	/**
+	 * 请求分发
 	 *
 	 * @return void
 	 * @author hwz
@@ -52,7 +129,7 @@ class mc {
 			$this->{'action_' . $action}();
 		}else{
 		}
-		
+
 	}
 
 	/**
@@ -77,6 +154,7 @@ class mc {
 			$_SESSION['list'] = $list;
 		}
 		echo json_encode($list);
+		$this->success('',$list);
 	}
 
 	/**
@@ -91,8 +169,7 @@ class mc {
 			'msg'=>'上传成功!',
 		);
 		if (empty($_FILES)) {
-			$response['msg'] = '文件列表为空!';
-			$response['error'] = MC_ERROR;
+			$this->error('文件列表为空!');
 		}
 		$file = $_FILES['file'];
 		$response['data'] = array(
@@ -103,18 +180,17 @@ class mc {
 		try{
 
 			$this->_fire('preUpload');
-			$response['data'] = $this->upyun->writeFile($this->path . $file['name'],
+			$response = $this->upyun->writeFile($this->path . $file['name'],
 				file_get_contents($file['tmp_name']));
-			$response['data']['url']= $this->host . $this->path . $file['name'] . $this->size;
+			$response['url']= $this->host . $this->path . $file['name'] . $this->size;
+			$response['type'] = $file['type'];
 			$this->_fire('postUpload');
+
 			$_SESSION['list'] = false;
+			$this->success('上传成功',$response);
 
 		}catch(UpYunException $e){
-
-			$response['error'] = MC_ERROR;
-			$response['msg'] = $e->getMessage();
-			$response['data'] = '';
-
+			$this->error($e->getMessage());
 		}
 		echo json_encode($response);
 		die();
@@ -131,20 +207,33 @@ class mc {
 		if ($path) {
 			try{
 				$this->upyun->delete($path);
-				$response['error'] = MC_OK;
+				$this->success();
 
 			}catch(UpYunException $e){
-				$response['error'] = MC_ERROR;
-				$response['msg'] = $e->getMessage();
+				$this->error($e->getMessage());
 			}
-			echo json_encode($response);
-			die();
 		}
-		echo json_encode(array(
-			'error'=>MC_ERROR,
-			'msg'=>'路径错误！',
-		));
-		die();
+		$this->error('路径错误!');
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	public function action_mkdir() {
+
+	}
+
+	/**
+	 * 删除文件夹
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	public function action_rmdir() {
+
 	}
 
 	/**
@@ -169,6 +258,7 @@ class mc {
 	 **/
 	private function _fire($mixed,$params = null) {
 		if (is_callable($mixed)) {
+			// todo 传递 $this给回调
 			call_user_func_array($mixed,$params);
 		}
 	}
