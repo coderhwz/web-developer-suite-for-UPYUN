@@ -20,11 +20,11 @@ class UpCloud {
 
 	private $_events;
 
-	private const SUCCESS = 0;
+	const SUCCESS = 0;
 
-	private const ERROR = 1;
+	const ERROR = 1;
 
-	private const WARNING = 2;
+	const WARNING = 2;
 
 	function __construct($bucket,$name,$pwd,$host,$size) {
 		include('upyun.class.php');
@@ -140,7 +140,7 @@ class UpCloud {
 	 **/
 	protected function action_list(){
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '/';
-		if ($_SESSION['list']) {
+		if (!isset($_SESSION['list'])) {
 			$list = $_SESSION['list'];
 		}else{
 			$this->_fire('preGetList');
@@ -153,8 +153,7 @@ class UpCloud {
 			}
 			$_SESSION['list'] = $list;
 		}
-		echo json_encode($list);
-		$this->success('',$list);
+		$this->success(null,$list);
 	}
 
 	/**
