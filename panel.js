@@ -1,4 +1,4 @@
-function mc(options){
+function panel(options){
 	this.opts = {
 		cover:true,
 		title:'又拍图片中心',
@@ -19,7 +19,7 @@ function mc(options){
 	this.loadData();
 	this.eventHandle();
 }
-mc.prototype={
+panel.prototype={
 	init:function(){
 	},
 	setupPanel:function(){
@@ -73,71 +73,6 @@ mc.prototype={
 		this.tip = $('<span>图片总数：125</span>').appendTo(this.footer);
 		this.btnOk = $('<a href="#" class="fs-confirm">确定</a>').appendTo(this.footer);
 		this.btnCancel = $('<a href="#" class="fs-cancel">取消</a>').appendTo(this.footer);
-
-
-
-
-
-
-
-		
-		/* this.mcheader = $('<div class="fs-header"/>');
-		this.mcheader.appendTo(this.panel);
-		this.mcheader.text(this.opts.title);
-		this.btnClose = $('<span class="fs-close" >×</span>');
-
-		this.mcbody = $('<div class="fs-body" />');
-		this.mcbody.appendTo(this.panel);
-		console.log(this.panel.height());
-
-		this.uploadPanel = $('<div class="fs-upload-panel" />');
-		this.uploadPanel.appendTo(this.mcbody).text('上传'); 
-
-
-		this.picsList = $('<ul class="fs-list" />');
-		this.picsList.appendTo(this.mcbody);
-
-
-		new mcUploader(this.uploadPanel[0],{
-			api:this.opts.api + '?action=upload',
-			onSuccess:function(result){
-				var li = $('<li><span style="vertical-align:middle;"><img src="'+result.data.url+'" /></span></li>').prependTo(_this.picsList).click(function(){
-					$(this).toggleClass('fs-selected');
-					_this.fireEvent('onSelected',this); 
-				});
-			}
-		});
-
-		this.mcfooter = $('<div class="fs-footer" />');
-		this.mcfooter.appendTo(this.panel);
-
-		this.btnOk = $('<button class="fs-btn-ok" />').text(this.opts.label_ok);
-		this.btnOk.appendTo(this.mcfooter);
-		this.btnCancel = $('<button class="fs-btn-cancel" />').text(this.opts.label_cancel);
-		this.btnCancel.appendTo(this.mcfooter);
-
-		this.btnClose.appendTo(this.mcheader);
-
-		this.btnClose.click(function(){
-			_this.close();
-			$('li',_this.picsList).removeClass('fs-selected');
-		});
-
-		this.btnCancel.click(function(){
-			_this.close();
-			$('li',_this.picsList).removeClass('fs-selected');
-		});
-		this.btnOk.click(function(){
-			var urls = [];
-			$('.fs-selected img',_this.picsList).each(function(index,value){
-				urls.push(this.src);
-			});
-			_this.fireEvent('onOK',urls);
-			_this.close();
-			$('li',_this.picsList).removeClass('fs-selected');
-		});
-		this.mcbody.height(this.panel.height() - 60); */
-
 	},
 
 	loadData:function(){
@@ -211,7 +146,7 @@ mc.prototype={
 			_this.fireEvent('onSelected',this);
 		});
 
-		new mcUploader(this.upload,{
+		new uploader(this.upload,{
 			api:this.opts.api + '?action=upload',
 			onSuccess:function(result){
 				if (result.error !== 0) {
@@ -256,7 +191,7 @@ mc.prototype={
 		});
 		$(window).resize(function(){
 			console.log(_this.panel.height());
-			_this.mcbody.height(_this.panel.height() - 60);
+			_this.panel.height(_this.panel.height() - 60);
 		});
 	},
 

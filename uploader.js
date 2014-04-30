@@ -1,4 +1,4 @@
-function mcUploader(element,options){
+function uploader(element,options){
 	this.holder = $(element);
 	this.opts = {
 		post:{}
@@ -6,7 +6,7 @@ function mcUploader(element,options){
 	this.opts = $.extend(this.opts,options,{});
 	this.init();
 }
-mcUploader.prototype = {
+uploader.prototype = {
 	init:function(){
 		var _this = this;
 		this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');

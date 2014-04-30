@@ -4,7 +4,7 @@
 	function upyun(element,options){
 		var _this = this;
 		if (window._upanel === undefined) {
-			window._upanel = new mc({
+			window._upanel = new panel({
 				api:options.api,
 			});
 		}
@@ -19,7 +19,7 @@
 				});
 			});
 		}else{
-			new mcUploader({
+			new uploader({
 				api:options.api + '?action=upload',
 			});
 		}
