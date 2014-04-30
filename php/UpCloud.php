@@ -9,6 +9,11 @@
  **/
 
 class UpCloud {
+	const SUCCESS = 0;
+
+	const ERROR = 1;
+
+	const WARNING = 2;
 
 	protected $upyun;
 
@@ -20,11 +25,26 @@ class UpCloud {
 
 	private $_events;
 
-	const SUCCESS = 0;
-
-	const ERROR = 1;
-
-	const WARNING = 2;
+	private $translate = array(
+		'OK'=>'	操作成功',
+		'Bad Request'=>'错误请求(如 URL 缺少空间名)',
+		'Unauthorized'=>'访问未授权',
+		'Sign error'=>'签名错误(操作员和密码,或签名格式错误)',
+		'Need Date Header'=>'发起的请求缺少 Date 头信息',
+		'Date offset error'=>'发起请求的服务器时间错误，请检查服务器时间是否与世界时间一致',
+		'Not Access'=>'权限错误(如非图片文件上传到图片空间)',
+		'File size too max'=>'单个文件超出大小(100Mb 以内)',
+		'Not a Picture File'=>'图片类空间错误码，非图片文件或图片文件格式错误。针对图片空间只允许上传 jpg/png/gif/bmp/tif 格式。',
+		'Picture Size too max'=>'图片类空间错误码，图片尺寸太大。针对图片空间，图片总像素在 200000000 以内。',
+		'Bucket full'=>'空间已用满',
+		'Bucket blocked'=>'空间被禁用,请联系管理员',
+		'User blocked'=>'操作员被禁用',
+		'Image Rotate Invalid Parameters'=>'图片旋转参数错误',
+		'Image Crop Invalid Parameters'=>'图片裁剪参数错误',
+		'Not Found'=>'获取文件或目录不存在；上传文件或目录时上级目录不存在',
+		'Not Acceptable'=>'目录错误（创建目录时已存在同名文件；或上传文件时存在同名目录)',
+		'System Error'=>'系统错误',
+	);
 
 	function __construct($bucket,$name,$pwd,$host,$size) {
 		include('upyun.class.php');
@@ -33,6 +53,7 @@ class UpCloud {
 		$this->upyun = new UpYun($bucket,$name,$pwd);
 		$this->host = $host;
 		$this->size = $size;
+		$this->path = '/';
 		session_start();
 		// $_SESSION['list'] = false;
 	}
@@ -44,7 +65,7 @@ class UpCloud {
 	 * @return void
 	 * @author hwz
 	 **/
-	public function error($msg) {
+	public function error($msg,$data=null) {
 		$this->_response(self::ERROR,$msg,$data);
 	}
 
@@ -140,7 +161,7 @@ class UpCloud {
 	 **/
 	protected function action_list(){
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '/';
-		if (!isset($_SESSION['list'])) {
+		if (isset($_SESSION['list']) && $_SESSION['list']) {
 			$list = $_SESSION['list'];
 		}else{
 			$this->_fire('preGetList');
@@ -180,7 +201,7 @@ class UpCloud {
 			$this->success('上传成功',$response);
 
 		}catch(UpYunException $e){
-			$this->error($e->getMessage());
+			$this->error($this->_getErrorMsg($e));
 		}
 		echo json_encode($response);
 		die();
@@ -200,7 +221,7 @@ class UpCloud {
 				$this->success();
 
 			}catch(UpYunException $e){
-				$this->error($e->getMessage());
+				$this->error($this->_getErrorMsg($e));
 			}
 		}
 		$this->error('路径错误!');
@@ -251,6 +272,20 @@ class UpCloud {
 			// todo 传递 $this给回调
 			call_user_func_array($mixed,$params);
 		}
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	private function _getErrorMsg($e) {
+		$msg = $e->getMessage();
+		if (isset($this->translate[$msg])) {
+			return $this->translate[$msg];
+		}
+		return $msg;
 	}
 }
 
