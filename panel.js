@@ -15,7 +15,6 @@
 		this._folderStack = [];
 
 		this.opts = $.extend(this.opts,options,{});
-		this._body = $('body');
 		this._curPath = '/';
 		this.init();
 		this.setupPanel();
@@ -32,7 +31,7 @@
 				return ;
 			}
 			this.cover = $('<div style="display:none;" class="fs-cover" />');
-			this.cover.appendTo(this._body);
+			this.cover.appendTo($('body'));
 
 			this.panel = $('<div class="fs-panel" style="height:500px;width:1120px;" />');
 			this.panel.appendTo(this.cover);
@@ -93,7 +92,7 @@
 				for (var i = 0; i < result.data.length; i++) {
 					var file = result.data[i];
 					var li = $('<li />').appendTo(_this.mainContent);
-					li.append('<a class="fs-del" href="javascript:;" >×</a>');
+					li.append('<a class="fs-del" href="#" >×</a>');
 					li.css({'width':_this.opts.imgWidth});
 					li.attr('data-name',file.name);
 
@@ -107,25 +106,9 @@
 					img.attr('alt',file.name);
 					img.attr('title',file.name);
 					img.load(function(){
-						var percent = this.naturalWidth / this.naturalHeight;
-						var newWidth=0,newHeight=0;
-						if (this.naturalWidth > this.naturalHeight) {
-							newWidth = _this.opts.imgWidth;
-							newHeight = newWidth / percent;
-							if (newHeight > _this.opts.imgHeight) {
-								newHeight = _this.opts.imgHeight;
-								newWidth = newHeight * percent;
-							} 
-						}else{
-							newHeight = _this.opts.imgHeight;
-							newWidth = newHeight * percent;
-							if (newWidth > _this.opts.imgWidth) {
-								newHeight = newWidth / percent;
-							}
-						}
-						// this.width = newWidth;
-						// this.height = newHeight; 
-						$(this).animate({'width':newWidth,'height':newHeight});
+						var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
+														_this.opts.imgWidth,_this.opts.imgHeight);
+						$(this).animate(scale);
 					});
 					img.attr('data-name',file.name);
 					li.append(img);
@@ -269,7 +252,7 @@
 				this.loadData(function(status){
 					if (status === 0) {
 						_this._folderStack.push(abspath);
-						_this.breadCrumbs.append('<a href="' + abspath + '">' + _this._getDirName(abspath) + '</a>');
+						_this.breadCrumbs.append('<a href="' + abspath + '">' + upyun.util.getDirName(abspath) + '</a>');
 						_this._setBreadSelected(abspath);
 					}
 					console.log('stack',_this._folderStack);
@@ -283,10 +266,6 @@
 					}
 				});
 			}
-		},
-		_getDirName:function(path){
-			var m = path.match(/([^/])*\/$/)[0];
-			return m.length < 1 ? '/' : m;
 		},
 		_setBreadSelected:function(path){
 			$('a',this.breadCrumbs).each(function(){
