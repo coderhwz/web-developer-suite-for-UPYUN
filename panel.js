@@ -12,10 +12,11 @@
 			imgHeight:74,
 		};
 		this._events = {};
+		this._folderStack = [];
 
 		this.opts = $.extend(this.opts,options,{});
 		this._body = $('body');
-		this.path = '/';
+		this._curPath = '/';
 		this.init();
 		this.setupPanel();
 		// this.loadData();
@@ -63,7 +64,7 @@
 
 			this.menu = $('<div class="fs-menu" />');
 			this.menu.appendTo(this.layoutRight);
-			this.breadCrumbs = $('<div class="fs-breadcrumbs"> <a data-path="/" href="#">/</a></div>');
+			this.breadCrumbs = $('<div class="fs-breadcrumbs" />');
 			this.breadCrumbs.appendTo(this.menu);
 
 			this.search = $('<div class="fs-search" />');
@@ -77,13 +78,17 @@
 			this.btnCancel = $('<a href="#" class="fs-cancel">取消</a>').appendTo(this.footer);
 		},
 
-		loadData:function(){
+		loadData:function(callback){
 			var _this = this;
-			$.post(this.opts.api + '?action=list',{path:_this.path},function(result){
+			if (_this.loading) {return;}
+			_this.loading = true;
+			$.post(this.opts.api + '?action=list',{path:_this._curPath},function(result){
+				_this.loading = false;
 				result = $.parseJSON(result);
-				if (result.error == 0) {
+				callback(result.error);
+				if (result.error === 0) {
 					_this.mainContent.html('');
-				};
+				}
 				for (var i = 0; i < result.data.length; i++) {
 					var file = result.data[i];
 					var li = $('<li />').appendTo(_this.mainContent);
@@ -117,8 +122,9 @@
 								newHeight = newWidth / percent;
 							}
 						}
-						this.width = newWidth;
-						this.height = newHeight;
+						// this.width = newWidth;
+						// this.height = newHeight; 
+						$(this).animate({'width':newWidth,'height':newHeight});
 					});
 					img.attr('data-name',file.name);
 					li.append(img);
@@ -183,11 +189,16 @@
 				$(this).removeClass('fs-hover');
 			});
 
+			this.breadCrumbs.delegate('a','click',function(event){
+				event.preventDefault();
+				_this._openFolder($(this).attr('href'));
+			});
+
 			this.panel.delegate('.fs-del','click',function(event){
 				event.preventDefault();
 				var $this = $(this);
 				if (confirm('确定要删除该文件吗？')) {
-					$.post(_this.opts.api + '?action=delete',{path:_this.path + $(this).next().attr('data-name') },function(result){
+					$.post(_this.opts.api + '?action=delete',{path:_this._curPath + $(this).next().attr('data-name') },function(result){
 						result = $.parseJSON(result);
 						if (result.error === 0) {
 							$this.parent().remove();
@@ -200,9 +211,7 @@
 
 			this.panel.delegate('li','dblclick',function(){
 				if ($(this).hasClass('fs-folder')) {
-					_this.path += $(this).attr('data-name');
-					_this.loadData();
-					_this.breadCrumbs.append('<a href="#">'+$(this).attr('data-name')+'</a>');
+					_this._openFolder(_this._curPath + '/' + $(this).attr('data-name') + '/');
 				}else{
 					var url = $(this).find('img').attr('src');
 					_this.fireEvent('onOK',[url]);
@@ -226,7 +235,8 @@
 		},
 		open:function(instanceOpts){
 			this.instance = instanceOpts;
-			this.loadData();
+			this._openFolder('/');
+			// this.loadData();
 			this.cover.show();
 			// this.setupPanel();
 			this.headConetnt.find('p').text(instanceOpts.title);
@@ -234,5 +244,52 @@
 		},
 		resize:function(){
 		},
+		//传入绝对地址
+		_openFolder:function(abspath){
+			abspath = abspath.replace('//','/');
+			var _pos = this._folderStack.indexOf(abspath),
+			_this = this;
+			//当前文件夹
+			if (_pos < 0) {
+				var _curPos = this._folderStack.indexOf(this._curPath);
+				var level = abspath.split('/').length -1 ;
+				this._folderStack.splice(level-1);
+				$('a',this.breadCrumbs).each(function(i,el){
+					if (i >= level-1) {
+						el.remove();
+					}
+				});
+				_this._curPath = abspath;
+				this.loadData(function(status){
+					if (status === 0) {
+						_this._folderStack.push(abspath);
+						_this.breadCrumbs.append('<a href="' + abspath + '">' + _this._getDirName(abspath) + '</a>');
+						_this._setBreadSelected(abspath);
+					}
+					console.log('stack',_this._folderStack);
+				});
+			}else{
+				_this._curPath = abspath;
+				this.loadData(function(status){
+					if (status === 0) {
+						//设置当前面包
+						_this._setBreadSelected(abspath);
+					}
+				});
+			}
+		},
+		_getDirName:function(path){
+			var m = path.match(/([^/])*\/$/)[0];
+			return m.length < 1 ? '/' : m;
+		},
+		_setBreadSelected:function(path){
+			$('a',this.breadCrumbs).each(function(){
+				if ($(this).attr('href') == path){
+					$(this).addClass('cur-bread');
+				}else{
+					$(this).removeClass('cur-bread');
+				}
+			});
+		}
 	};
 })(jQuery);

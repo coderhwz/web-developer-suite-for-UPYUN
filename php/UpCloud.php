@@ -55,6 +55,7 @@ class UpCloud {
 		// $this->size = $size;
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '';
 		session_start();
+		// $_SESSION['upyun-cache'] = false;
 	}
 
 	/**
@@ -164,7 +165,7 @@ class UpCloud {
 		$this->path = rtrim($this->path,'/') . '/';
 
 		$list = $this->getCache($this->path);
-		if ($list) {
+		if ($list !== false) {
 			$this->success('',$list);
 		} else{
 			$this->_fire('preGetList');
@@ -304,7 +305,7 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	protected function setCache($key,$value) {
-		$key = urlencode($key);
+		$key = md5($key);
 		if (!isset($_SESSION['upyun-cache'])) {
 			$_SESSION = array();
 		}
@@ -318,7 +319,7 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	protected function getCache($key) {
-		$key = urlencode($key);
+		$key = md5($key);
 		if (!isset($_SESSION['upyun-cache'])) {
 			$_SESSION['upyun-cache'] = array();
 			return false;
@@ -336,7 +337,7 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	protected function delCache($key) {
-		$key = urlencode($key);
+		$key = md5($key);
 		if (!isset($_SESSION['upyun-cache'])) {
 			return false;
 		}
