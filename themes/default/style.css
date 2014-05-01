@@ -158,5 +158,8 @@ a {
     background-color: #7d7d7d;
 }
 .fs-content-left li{
-	display:inline;
+	display:inline-block;
+	margin:0 auto;
+	padding:2px 3px;
+	text-align:center;
 }

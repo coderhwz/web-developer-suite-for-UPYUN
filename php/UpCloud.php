@@ -52,10 +52,9 @@ class UpCloud {
 		// todo 文件类型限制 ，文件大小限制 
 		$this->upyun = new UpYun($bucket,$name,$pwd);
 		$this->host = $host;
-		$this->size = $size;
-		$this->path = '/';
+		// $this->size = $size;
+		$this->path = isset($_POST['path']) ? $_POST['path'] : '';
 		session_start();
-		// $_SESSION['list'] = false;
 	}
 
 	/**
@@ -161,18 +160,28 @@ class UpCloud {
 	 **/
 	protected function action_list(){
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '/';
-		if (isset($_SESSION['list']) && $_SESSION['list']) {
-			$list = $_SESSION['list'];
-		}else{
+		// var_dump($_SESSION);
+		$this->path = rtrim($this->path,'/') . '/';
+
+		$list = $this->getCache($this->path);
+		if ($list) {
+			$this->success('',$list);
+		} else{
 			$this->_fire('preGetList');
 			$list = $this->upyun->getList($this->path);
 			$this->_fire('postGetList',$list);
-			foreach ($list as &$pic) {
-				if ($pic['type'] == 'file') {
-					$pic['url'] = $this->host . $this->path . $pic['name'] . $this->size;
+			$folders = array();
+			$files = array();
+			foreach ($list as $item) {
+				if ($item['type'] == 'folder') {
+					$folders[] = $item;
+				}else{
+					$item['url'] = $this->host . $this->path . $item['name'];
+					$files[] = $item;
 				}
 			}
-			$_SESSION['list'] = $list;
+			$list = array_merge($folders,$files);
+			$this->setCache($this->path,$list);
 		}
 		$this->success(null,$list);
 	}
@@ -286,6 +295,54 @@ class UpCloud {
 			return $this->translate[$msg];
 		}
 		return $msg;
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	protected function setCache($key,$value) {
+		$key = urlencode($key);
+		if (!isset($_SESSION['upyun-cache'])) {
+			$_SESSION = array();
+		}
+		$_SESSION['upyun-cache'][$key] = $value;
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	protected function getCache($key) {
+		$key = urlencode($key);
+		if (!isset($_SESSION['upyun-cache'])) {
+			$_SESSION['upyun-cache'] = array();
+			return false;
+		}
+		if (!isset($_SESSION['upyun-cache'][$key])) {
+			return false;
+		}
+		return $_SESSION['upyun-cache'][$key];
+	}
+
+	/**
+	 * undocumented function
+	 *
+	 * @return void
+	 * @author hwz
+	 **/
+	protected function delCache($key) {
+		$key = urlencode($key);
+		if (!isset($_SESSION['upyun-cache'])) {
+			return false;
+		}
+		if (isset($_SESSION['upyun-cache'][$key])) {
+			unset($_SESSION['upyun-cache'][$key]);
+		}
 	}
 }
 

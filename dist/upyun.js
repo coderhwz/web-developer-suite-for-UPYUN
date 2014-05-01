@@ -1,319 +1,320 @@
-function mcUploader(element,options){
-	this.holder = $(element);
-	this.opts = {
-		post:{}
-	};
-	this.opts = $.extend(this.opts,options,{});
-	this.init();
-}
-mcUploader.prototype = {
-	init:function(){
-		var _this = this;
-		this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');
-		// this.holder.after(this.uploadPanel);
-		this.holder.click(function(){
-			_this.uploadInput.click();
-		});
-		_this.uploadInput.on('change',function(){
-			console.log('change');
-			var formData = new FormData();
-			if (_this.opts.post !== undefined) {
-				$.each(_this.opts.post,function(key,val){
-					console.log(key,val);
-					formData.append(key,val);
-				});
-			}
-			formData.append('file',this.files[0]);
-			$.ajax({
-				url: _this.opts.api, 
-				type: 'POST',
-				xhr: function() {  
-					var _xhr = $.ajaxSettings.xhr();
-					if(_xhr.upload){ 
-						_xhr.upload.addEventListener('progress',onProcess, false); 
-					}
-					return _xhr;
-				},
-				success: function(result) {
-					console.log($.ajaxSettings.xhr().upload);
-					result = $.parseJSON(result);
-					if (_this.opts.onSuccess) {
-						_this.opts.onSuccess(result);
-					}
-				},
-				data: formData,
-				cache: false,
-				contentType: false,
-				processData: false
-			});
+(function(){/* code by hwz */
 
-			function onProcess(e){
-				console.log(e);
-				if(e.lengthComputable){
-					_this.holder.text(e.loaded + " / " + e.total);
+var upyun = window.upyun || {};
+
+;(function($){
+	"use strict";
+	upyun.uploader = function(element,options){
+		this.holder = $(element);
+		this.opts = {
+			post:{}
+		};
+		this.opts = $.extend(this.opts,options,{});
+		this.init();
+	};
+	upyun.uploader.prototype = {
+		init:function(){
+			var _this = this;
+			this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');
+			// this.holder.after(this.uploadPanel);
+			this.holder.click(function(){
+				_this.uploadInput.click();
+			});
+			_this.uploadInput.on('change',function(){
+				console.log('change');
+				var formData = new FormData();
+				if (_this.opts.post !== undefined) {
+					$.each(_this.opts.post,function(key,val){
+						console.log(key,val);
+						formData.append(key,val);
+					});
 				}
-			}
-		});
-	}
-};
-;function mc(options){
-	this.opts = {
-		cover:true,
-		title:'又拍图片中心',
-		label_cancel:"取消",
-		label_ok:"确定",
-		label_upload:"上传文件",
-		multi:false,
-		imgWidth:120,
-		imgHeight:74,
-	};
-	this._events = {};
-
-	this.opts = $.extend(this.opts,options,{});
-	this._body = $('body');
-	this.path = '/';
-	this.init();
-	this.setupPanel();
-	this.loadData();
-	this.eventHandle();
-}
-mc.prototype={
-	init:function(){
-		console.log('init');
-		if (this.opts.cover) {
-			this.setupCover();
-		}
-	},
-	setupCover:function(){
-		if ($('.mc-cover').length > 0) {
-			this.cover = $('.mc-cover');
-		}else{
-			this.cover = $('<div class="hide mc-cover"> </div>');
-			this.cover.appendTo(this._body);
-		}
-	},
-	setupPanel:function(){
-
-		var _this = this;
-		if ($('.mc-panel').length > 0 ) {
-			return ;
-		}
-
-		this.panel = $('<div class="mc-panel"></div>');
-		this.panel.appendTo(this.cover);
-		this.mcheader = $('<div class="mc-header"/>');
-		this.mcheader.appendTo(this.panel);
-		this.mcheader.text(this.opts.title);
-		this.btnClose = $('<span class="mc-close" >×</span>');
-
-		this.mcbody = $('<div class="mc-body" />');
-		this.mcbody.appendTo(this.panel);
-		console.log(this.panel.height());
-
-		this.uploadPanel = $('<div class="mc-upload-panel" />');
-		this.uploadPanel.appendTo(this.mcbody).text('上传'); 
-
-
-		this.picsList = $('<ul class="mc-list" />');
-		this.picsList.appendTo(this.mcbody);
-
-
-		new mcUploader(this.uploadPanel[0],{
-			api:this.opts.api + '?action=upload',
-			onSuccess:function(result){
-				var li = $('<li><span style="vertical-align:middle;"><img src="'+result.data.url+'" /></span></li>').prependTo(_this.picsList).click(function(){
-					$(this).toggleClass('mc-selected');
-					_this.fireEvent('onSelected',this); 
+				formData.append('file',this.files[0]);
+				$.ajax({
+					url: _this.opts.api, 
+					type: 'POST',
+					xhr: function() {  
+						var _xhr = $.ajaxSettings.xhr();
+						if(_xhr.upload){ 
+							_xhr.upload.addEventListener('progress',onProcess, false); 
+						}
+						return _xhr;
+					},
+					success: function(result) {
+						console.log($.ajaxSettings.xhr().upload);
+						result = $.parseJSON(result);
+						if (_this.opts.onSuccess) {
+							_this.opts.onSuccess(result);
+						}
+					},
+					data: formData,
+					cache: false,
+					contentType: false,
+					processData: false
 				});
-			}
-		});
 
-		this.mcfooter = $('<div class="mc-footer" />');
-		this.mcfooter.appendTo(this.panel);
-
-		this.btnOk = $('<button class="mc-btn-ok" />').text(this.opts.label_ok);
-		this.btnOk.appendTo(this.mcfooter);
-		this.btnCancel = $('<button class="mc-btn-cancel" />').text(this.opts.label_cancel);
-		this.btnCancel.appendTo(this.mcfooter);
-
-		this.btnClose.appendTo(this.mcheader);
-
-		this.btnClose.click(function(){
-			_this.close();
-			$('li',_this.picsList).removeClass('mc-selected');
-		});
-
-		this.btnCancel.click(function(){
-			_this.close();
-			$('li',_this.picsList).removeClass('mc-selected');
-		});
-		this.btnOk.click(function(){
-			var urls = [];
-			$('.mc-selected img',_this.picsList).each(function(index,value){
-				urls.push(this.src);
+				function onProcess(e){
+					console.log(e);
+					if(e.lengthComputable){
+						_this.holder.text(e.loaded + " / " + e.total);
+					}
+				}
 			});
-			_this.fireEvent('onOK',urls);
-			_this.close();
-			$('li',_this.picsList).removeClass('mc-selected');
-		});
-		this.mcbody.height(this.panel.height() - 60);
+		}
+	};
+})(jQuery);
+;(function($){
+	"use strict";
+	upyun.panel = function(options){
+		this.opts = {
+			cover:true,
+			title:'又拍图片中心',
+			label_cancel:"取消",
+			label_ok:"确定",
+			label_upload:"上传文件",
+			multi:false,
+			imgWidth:120,
+			imgHeight:74,
+		};
+		this._events = {};
 
-	},
+		this.opts = $.extend(this.opts,options,{});
+		this._body = $('body');
+		this.path = '/';
+		this.init();
+		this.setupPanel();
+		// this.loadData();
+		this.eventHandle();
+	};
+	upyun.panel.prototype={
+		init:function(){
+		},
+		setupPanel:function(){
 
-	loadData:function(){
-		var _this = this;
-		// this.opts.api;
-		$.post(this.opts.api + '?action=list',{},function(data){
-			data = $.parseJSON(data);
-			for (var i = 0; i < data.length; i++) {
-				if (data[i].type == 'file') {
-					var li = $('<li />').appendTo(_this.picsList);
-					li.append('<a class="mc-del" href="javascript:;" >×</a>');
+			var _this = this;
+			if ($('.fs-cover').length > 0 ) {
+				return ;
+			}
+			this.cover = $('<div style="display:none;" class="fs-cover" />');
+			this.cover.appendTo(this._body);
 
-					var img = $('<img />');
-					img.attr('src',data[i].url);
-					img.attr('alt',data[i].name);
-					img.attr('title',data[i].name);
-					img.load(function(){
-						var percent = this.naturalWidth / this.naturalHeight;
-						var newWidth=0,newHeight=0;
-						if (this.naturalWidth > this.naturalHeight) {
-							newWidth = _this.opts.imgWidth;
-							newHeight = newWidth / percent;
-							if (newHeight > _this.opts.imgHeight) {
+			this.panel = $('<div class="fs-panel" style="height:500px;width:1120px;" />');
+			this.panel.appendTo(this.cover);
+
+			this.layoutLeft = $('<div class="fs-panel-left" />');
+			this.layoutLeft.appendTo(this.panel);
+
+			this.logo = $('<div id="fs-logo"> <img src="../themes/default/images/logo.png" width="50"> </div>'); 
+			this.logo.appendTo(this.layoutLeft);
+
+			this.toolbar = $('<div class="fs-tool-bar" />');
+			this.toolbar.appendTo(this.layoutLeft);
+
+			this.mkdir = $('<a class="fs-mkdir"> <i></i> 创建文件夹 </a>');
+			this.mkdir.appendTo(this.toolbar);
+
+			this.upload = $('<a class="fs-upload"> <i></i> 上传文件 </a>');
+			this.upload.appendTo(this.toolbar);
+
+			this.layoutRight = $('<div class="fs-panel-right" />');
+			this.layoutRight.appendTo(this.panel);
+
+			this.header = $('<div class="fs-header" />');
+			this.header.appendTo(this.layoutRight);
+
+			this.headConetnt = $('<div class="fs-header-left" style="width: 950px;"> <h2>又拍图片中心</h2> <p></p> </div>');
+			this.headConetnt.appendTo(this.header);
+			this.btnClose = $('<a class="fs-close" style="margin-left:960px;">关闭</a>').appendTo(this.header);
+
+			this.menu = $('<div class="fs-menu" />');
+			this.menu.appendTo(this.layoutRight);
+			this.breadCrumbs = $('<div class="fs-breadcrumbs"> <a href="">首页</a> <a href="">双怕图片</a> </div>');
+			this.breadCrumbs.appendTo(this.menu);
+
+			this.search = $('<div class="fs-search" />');
+			this.search.appendTo(this.menu);
+			this.content = $('<div class="fs-content" style="height:340px;" />').appendTo(this.layoutRight);
+			this.mainContent = $('<div class="fs-content-left" />').appendTo(this.content);
+			this.edit = $('<div class="fs-content-right" />').appendTo(this.content);
+			this.footer = $('<div class="fs-footer" />').appendTo(this.layoutRight);
+			this.tip = $('<span>图片总数：125</span>').appendTo(this.footer);
+			this.btnOk = $('<a href="#" class="fs-confirm">确定</a>').appendTo(this.footer);
+			this.btnCancel = $('<a href="#" class="fs-cancel">取消</a>').appendTo(this.footer);
+		},
+
+		loadData:function(){
+			var _this = this;
+			$.post(this.opts.api + '?action=list',{},function(result){
+				result = $.parseJSON(result);
+				for (var i = 0; i < result.data.length; i++) {
+					var file = result.data[i];
+					if (file.type == 'file') {
+						var li = $('<li />').appendTo(_this.mainContent);
+						li.append('<a class="fs-del" href="javascript:;" >×</a>');
+						li.css({'width':_this.opts.imgWidth});
+
+						var img = $('<img />');
+						img.attr('src',file.url + _this.instance.style);
+						img.attr('alt',file.name);
+						img.attr('title',file.name);
+						img.load(function(){
+							var percent = this.naturalWidth / this.naturalHeight;
+							var newWidth=0,newHeight=0;
+							if (this.naturalWidth > this.naturalHeight) {
+								newWidth = _this.opts.imgWidth;
+								newHeight = newWidth / percent;
+								if (newHeight > _this.opts.imgHeight) {
+									newHeight = _this.opts.imgHeight;
+									newWidth = newHeight * percent;
+								} 
+							}else{
 								newHeight = _this.opts.imgHeight;
 								newWidth = newHeight * percent;
-							} 
-						}else{
-							newHeight = _this.opts.imgHeight;
-							newWidth = newHeight * percent;
-							if (newWidth > _this.opts.imgWidth) {
-								newHeight = newWidth / percent;
+								if (newWidth > _this.opts.imgWidth) {
+									newHeight = newWidth / percent;
+								}
 							}
-						}
-						this.width = newWidth;
-						this.height = newHeight;
-					});
-					img.attr('data-name',data[i].name);
-					li.append(img);
+							this.width = newWidth;
+							this.height = newHeight;
+						});
+						img.attr('data-name',file.name);
+						li.append(img);
+					}
 				}
-			}
-		});
-	},
+			});
+		},
 
-	selectHandle:function(){
-	},
-
-	eventHandle:function(){
-		var _this = this;
-		if (this.opts.cover) {
-			this.cover.delegate('.mc-cover','click',function(event){
-				// console.log('log');
+		eventHandle:function(){
+			var _this = this;
+			this.btnClose.click(function(event){
+				event.preventDefault();
 				_this.close();
 			});
-			/* this.cover.click(function(){
-			}); */
-		}
-		this.mcbody.delegate('li','click',function(){
-			$(this).toggleClass('mc-selected');
-			_this.fireEvent('onSelected',this);
-		});
 
-		this.mcbody.delegate('li,img','mouseenter',function(){
-			$(this).addClass('mc-hover');
-		});
-		this.mcbody.delegate('li,img','mouseout',function(){
-			$(this).removeClass('mc-hover');
-		});
+			this.btnCancel.click(function(event){
+				event.preventDefault();
+				_this.close();
+				$('li',_this.picsList).removeClass('fs-selected');
+			});
 
-		this.mcbody.delegate('.mc-del','click',function(event){
-			event.preventDefault();
-			var $this = $(this);
-			if (confirm('确定要删除该文件吗？')) {
-				$.post(_this.opts.api + '?action=delete',{path:_this.path + $(this).next().attr('data-name') },function(result){
-					result = $.parseJSON(result);
-					console.log(result);
-					if (result.error === 0) {
-						$this.parent().remove();
-					}else{
-						alert(result.msg);
-					}
+			this.btnOk.click(function(){
+				event.preventDefault();
+				var urls = [];
+				$('.fs-selected img',_this.mainContent).each(function(index,value){
+					urls.push(this.src);
 				});
+				_this.fireEvent('onOK',urls);
+				_this.close();
+				$('li',_this.picsList).removeClass('fs-selected');
+			});
+
+			this.panel.delegate('li','click',function(){
+				if (!_this.instance.multi) {
+					$('.fs-selected',_this.mainContent).removeClass('fs-selected');
+				}
+				$(this).toggleClass('fs-selected');
+				if ($('.fs-selected',_this.mainContent).length < 1){
+					_this.mainContent.css({'width':'auto'});
+				}else{
+					_this.mainContent.css({'width':'800px'});
+					_this.fireEvent('onSelected',this);
+				}
+			});
+
+			new upyun.uploader(this.upload,{
+				api:this.opts.api + '?action=upload',
+				onSuccess:function(result){
+					if (result.error !== 0) {
+						return alert(result.msg);
+					}
+					var li = $('<li><span style="vertical-align:middle;"><img src="'+result.data.url+'" /></span></li>').prependTo(_this.picsList).click(function(){
+						$(this).toggleClass('fs-selected');
+						_this.fireEvent('onSelected',this); 
+					});
+				}
+			});
+
+			this.panel.delegate('li,img','mouseenter',function(){
+				$(this).addClass('fs-hover');
+			});
+			this.panel.delegate('li,img','mouseout',function(){
+				$(this).removeClass('fs-hover');
+			});
+
+			this.panel.delegate('.fs-del','click',function(event){
+				event.preventDefault();
+				var $this = $(this);
+				if (confirm('确定要删除该文件吗？')) {
+					$.post(_this.opts.api + '?action=delete',{path:_this.path + $(this).next().attr('data-name') },function(result){
+						result = $.parseJSON(result);
+						if (result.error === 0) {
+							$this.parent().remove();
+						}else{
+							alert(result.msg);
+						}
+					});
+				}
+			});
+
+			this.panel.delegate('li','dblclick',function(){
+				var url = $(this).find('img').attr('src');
+
+				_this.fireEvent('onOK',[url]);
+				_this.close();
+				$('li',_this.mainContent).removeClass('fs-selected');
+			});
+			/* $(window).resize(function(){
+				_this.panel.height(_this.panel.height() - 60);
+			});  */
+		},
+
+		fireEvent:function(event,params){
+			if (this.instance && this.instance.hasOwnProperty(event)) {
+				return this.instance[event](params);
 			}
-		});
+		},
 
-		this.mcbody.delegate('li','dblclick',function(){
-			var url = $(this).find('img').attr('src');
-
-			_this.fireEvent('onOK',[url]);
-			_this.close();
-			$('li',_this.picsList).removeClass('mc-selected');
-		});
-		$(window).resize(function(){
-			console.log(_this.panel.height());
-			_this.mcbody.height(_this.panel.height() - 60);
-		});
-	},
-
-	fireEvent:function(event,params){
-		if (this.instance.hasOwnProperty(event)) {
-			console.log(event,'fired');
-			return this.instance[event](params);
-		}
-	},
-
-	close:function(){
-		if (this.opts.cover) {
+		close:function(){
 			this.cover.hide();
-		}
-		this.panel.hide();
-	},
-	open:function(instanceOpts){
-		this.instance = instanceOpts;
-		if (this.opts.cover) {
+		},
+		open:function(instanceOpts){
+			this.instance = instanceOpts;
+			this.loadData();
 			this.cover.show();
-		}
-		this.setupPanel();
-		$(window).resize();
-		this.panel.show();
-	},
-	resize:function(){
-	},
-};
-;/* code by hwz */
-(function($){
-
-	function upyun(element,options){
-		var _this = this;
-		if (window._upanel === undefined) {
-			window._upanel = new mc({
-				api:options.api,
-			});
-		}
-
-		this.element = $(element);
-		if (options.panel) {
-			this.element.click(function(){
-				window._upanel.open({
-					onOK:function(urls){
-						_this.element.val(urls[0]);
-						$('#holder').attr('src',urls[0]);
-					}
-				});
-			});
-		}else{
-			new mcUploader({
-				api:options.api + '?action=upload',
-			});
-		}
-	}
+			// this.setupPanel();
+			this.headConetnt.find('p').text(instanceOpts.title);
+			// $(window).resize();
+		},
+		resize:function(){
+		},
+	};
+})(jQuery);
+;(function($){
 	$.fn.upyun = function (options) {
 		return this.each(function () {
-			if (!$.data(this, 'upyun')) {
-				$.data(this, 'upyun', new upyun(this,options));
+			var opts = {
+				style:'!small',
+				multi:false
+			};
+
+			var element = $(this);
+			opts = $.extend(opts,options,{});
+			if (window._upanel === undefined) {
+				window._upanel = new upyun.panel({
+					api:opts.api,
+				});
 			}
+
+			opts.title = opts.title || element.attr('data-title') || '请选择图片';
+
+			opts.onOK = opts.onOK || function(images){
+				element.val(images[0]);
+			};
+
+			element.click(function(){
+				window._upanel.open(opts);
+			});
 		}); 
     };
 })(jQuery);
-
-
+})(jQuery);

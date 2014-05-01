@@ -6,9 +6,10 @@
 		<link rel="stylesheet" href="./style.css" type="text/css" media="screen" charset="utf-8">
 		<link rel="stylesheet" href="../themes/default/style.css" type="text/css" media="screen" charset="utf-8">
 		<script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../uploader.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../panel.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../upyun.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../panel.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../uploader.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../jquery.upyun.js" type="text/javascript" charset="utf-8"></script>
 
 		<!-- <script src="../dist/upyun.min.js" type="text/javascript" charset="utf-8"></script> -->
 
@@ -20,12 +21,6 @@
 		
 	</head>
 	<body>
-		<style type="text/css" media="screen">
-			input{
-				width:300px;
-			}
-		</style>
-						<input type="text" class="upyun" name="picture" value="">
 		<div class="wrapper">
 			<div class="demo-head"><h1>又拍开发者套件演示</h1><a href="#" class="like">喜欢</a></div>
 			<div class="demo-body">
@@ -39,7 +34,7 @@
 						
 					</div>
 				</div>
-				<input type="text" class="upyun" name="picture" value="">
+				<input data-title="请选择封面图片" type="text" class="upyun" name="picture" value="">
 				<img id="holder" src="" width="120" />
 				<input type="text" class="upyun" name="picture" value="">
 			</div>
