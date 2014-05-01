@@ -55,8 +55,9 @@
 			this.layoutRight = $('<div class="fs-panel-right" />');
 			this.layoutRight.appendTo(this.panel);
 
-			this.header = $('<div class="fs-header" />');
-			this.header.appendTo(this.layoutRight);
+			this.header = $('<div class="fs-header" />').appendTo(this.layoutRight);
+			this.confirm = $('<div class="fs-confirm"><div class="fs-confirm-wrapper"><div class="fs-msg"><i></i><span>确定要删除吗？</span></div><div class="fs-confirm-footer"><a href="#" class="fs-cancel">取消</a><a href="#" class="fs-confirm">确定</a></div></div></div>').appendTo(this.layoutRight);
+			this.alert = $('<div class="fs-alert"><div class="fs-alert-wrapper"><div class="fs-msg"><i></i><span>确定要删除吗？</span></div><div class="fs-alert-footer"><a href="#" class="fs-confirm">确定</a></div></div></div>').appendTo(this.layoutRight);
 
 			this.headConetnt = $('<div class="fs-header-left" style="width: 950px;"> <h2>又拍图片中心</h2> <p></p> </div>');
 			this.headConetnt.appendTo(this.header);
@@ -169,6 +170,7 @@
 				}
 			});
 
+
 			new upyun.uploader(this.upload,{
 				api:this.opts.api + '?action=upload',
 				onSuccess:function(result){
@@ -197,6 +199,10 @@
 			this.panel.delegate('.fs-del','click',function(event){
 				event.preventDefault();
 				var $this = $(this);
+				// return _this._alert('danger','失败');
+				return _this._confirm('danger','确定要删除该文件吗？',function(status){
+					console.log(status);
+				});
 				if (confirm('确定要删除该文件吗？')) {
 					$.post(_this.opts.api + '?action=delete',{path:_this._curPath + $(this).next().attr('data-name') },function(result){
 						result = $.parseJSON(result);
@@ -290,6 +296,38 @@
 					$(this).removeClass('cur-bread');
 				}
 			});
-		}
+		},
+		_confirm:function(level,msg,callback){
+			var _this = this;
+			this.confirm.animate({height:'150'});
+			this.confirm.undelegate('a','click');
+			this.confirm.delegate('a','click',function(event){
+				event.preventDefault();
+				callback($(this).hasClass('fs-confirm'));
+				_this.confirm.animate({height:0});
+			});
+		},
+		_alert:function(level,msg){
+			var _this = this;
+			this.alert.animate({height:'150'});
+			//可能不需要 这样做 todo
+			this.alert.undelegate('a','click');
+			this.alert.delegate('a','click',function(event){
+				event.preventDefault();
+				_this.alert.animate({height:0});
+			});
+		},
+		_prompt:function(msg){
+			var _this = this;
+			this.prompt.animate({height:'150'});
+			//可能不需要 这样做 todo
+			this.prompt.undelegate('a','click');
+			this.prompt.delegate('a','click',function(event){
+				event.preventDefault();
+				_this.prompt.animate({height:0});
+			});
+		},
+
+
 	};
 })(jQuery);

@@ -151,10 +151,14 @@ a {
     padding: 8px 32px;
     color: #fff;
 }
-.fs-footer a.fs-confirm {
+a.fs-confirm {
     background-color: #d77b31;
+    color: #fff;
+    float: right;
+    margin: 8px 10px;
+    padding: 8px 32px;
 }
-.fs-footer a.fs-cancel {
+a.fs-cancel {
     background-color: #7d7d7d;
 }
 .fs-content-left li{
@@ -165,4 +169,15 @@ a {
 }
 .cur-bread{
 	background-color:red !important;
+}
+.fs-alert,.fs-confirm{
+	width:200px;
+	height:0;
+	overflow:hidden;
+	position:absolute;
+	background-color:red;
+	left:40%;
+}
+.fs-confirm-wrapper{
+	height:300px;
 }
