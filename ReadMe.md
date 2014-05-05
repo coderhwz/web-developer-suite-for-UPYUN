@@ -1,6 +1,6 @@
 # 又拍开发者套件
 
-![示例图](../screenshot.png)
+![示例图](./screenshot.png)
 
 ## 开发列表
 
