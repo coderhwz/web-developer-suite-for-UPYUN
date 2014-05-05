@@ -16,6 +16,7 @@
 
 		this.opts = $.extend(this.opts,options,{});
 		this._curPath = '/';
+		this._folderICO = '../themes/default/images/Folder.png';
 		this.init();
 		this.setupPanel();
 		// this.loadData();
@@ -30,52 +31,114 @@
 			if ($('.fs-cover').length > 0 ) {
 				return ;
 			}
-			this.cover = $('<div style="display:none;" class="fs-cover" />');
-			this.cover.appendTo($('body'));
+			var tpl = 
+					'<div style="display:none;" class="fs-cover">'+
+						'<div class="fs-panel" style="height:500px;width:1120px;">'+
+							'<div class="fs-panel-left">'+
+								'<div id="fs-logo">'+
+									'<img src="../themes/default/images/logo.png" width="50">'+
+								'</div>'+
+								'<div class="fs-tool-bar">'+
+									'<a class="fs-mkdir">'+
+										'<i></i>'+
+										'创建文件夹'+
+									'</a>'+
+									'<a class="fs-upload">'+
+										'<i></i>'+
+										'上传图片'+
+									'</a>'+
+								'</div>'+
+							'</div>'+
+							'<div class="fs-panel-right">'+
+								'<div class="fs-header">'+
+									'<div class="fs-header-left" style="width: 950px;">'+
+										'<h2>又拍图片中心</h2>'+
+										'<p>请选择一张图片作为你的logo</p>'+
+									'</div>'+
+									'<a class="fs-close" style="margin-left:960px;">关闭</a>'+
+								'</div>'+
+								'<div class="fs-cfm">'+
+									'<div class="fs-cfm-wrapper">'+
+										'<div class="fs-msg">'+
+											'<i></i>'+
+											'<span>确定要删除吗？</span>'+
+										'</div>'+
+										'<div class="fs-cfm-footer">'+
+											'<a href="#" class="fs-cancel">取消</a>'+
+											'<a href="#" class="btn fs-confirm">确定</a>'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+								'<div class="fs-alert">'+
+									'<div class="fs-alert-wrapper">'+
+										'<div class="fs-msg">'+
+											'<i></i>'+
+											'<span>出了一点问题</span>'+
+										'</div>'+
+										'<div class="fs-alert-footer">'+
+											'<a href="#" class="btn fs-confirm">确定</a>'+
+										'</div>'+
+									'</div>'+
+								'</div>'+
+								'<div class="fs-menu">'+
+									'<div class="fs-breadcrumbs">'+
+									'</div>'+
+									'<div class="fs-search">'+
+									'</div>'+
+								'</div>'+
+								'<div class="fs-content" style="height:340px;">'+
+									'<div class="fs-content-left" style="width:800px">'+
+									'</div>'+
+									'<div class="fs-content-right" style="margin-left:800px">'+
+										'<img src="http://bitbucket.b0.upaiyun.com/bizhi-2.jpg!small" />'+
+										'<ul class="fs-info">'+
+											'<li>名称：bizhi-2.jpg</li>'+
+											'<li>名称：bizhi-2.jpg</li>'+
+											'<li>名称：bizhi-2.jpg</li>'+
+										'</ul>'+
+										'<ul class="fs-options">'+
+											'<li>'+
+												'<label>链接' +
+												'<input type="text" class="link" />'+
+												'</label>'+
+											'</li>'+
+										'</ul>'+
+										''+
+									'</div>'+
+								'</div>'+
+								'<div class="fs-footer">'+
+									'<span>图片总数：125</span>'+
+									'<a class="fs-confirm">确定</a>'+
+									'<a class="fs-cancel">取消</a>'+
+								'</div>'+
+							'</div>'+
+						'</div>'+
+					'</div>';
+			this._body = $('body');
+			this.cover = $(tpl).appendTo(this._body);
+			console.log(this.cover);
+			this.panel = $('.fs-panel',this.cover);
+			this.layoutLeft = $('.fs-panel-left',this.cover);
+			this.toolbar = $('.fs-tool-bar',this.layoutLeft);
+			
+			this.layoutRight = $('.fs-panel-right',this.cover);
+			this.header = $('.fs-header',this.layoutRight);
 
-			this.panel = $('<div class="fs-panel" style="height:500px;width:1120px;" />');
-			this.panel.appendTo(this.cover);
-
-			this.layoutLeft = $('<div class="fs-panel-left" />');
-			this.layoutLeft.appendTo(this.panel);
-
-			this.logo = $('<div id="fs-logo"> <img src="../themes/default/images/logo.png" width="50"> </div>'); 
-			this.logo.appendTo(this.layoutLeft);
-
-			this.toolbar = $('<div class="fs-tool-bar" />');
-			this.toolbar.appendTo(this.layoutLeft);
-
-			this.mkdir = $('<a class="fs-mkdir"> <i></i> 创建文件夹 </a>');
-			this.mkdir.appendTo(this.toolbar);
-
-			this.upload = $('<a class="fs-upload"> <i></i> 上传文件 </a>');
-			this.upload.appendTo(this.toolbar);
-
-			this.layoutRight = $('<div class="fs-panel-right" />');
-			this.layoutRight.appendTo(this.panel);
-
-			this.header = $('<div class="fs-header" />').appendTo(this.layoutRight);
-			this.confirm = $('<div class="fs-confirm"><div class="fs-confirm-wrapper"><div class="fs-msg"><i></i><span>确定要删除吗？</span></div><div class="fs-confirm-footer"><a href="#" class="fs-cancel">取消</a><a href="#" class="fs-confirm">确定</a></div></div></div>').appendTo(this.layoutRight);
-			this.alert = $('<div class="fs-alert"><div class="fs-alert-wrapper"><div class="fs-msg"><i></i><span>确定要删除吗？</span></div><div class="fs-alert-footer"><a href="#" class="fs-confirm">确定</a></div></div></div>').appendTo(this.layoutRight);
-
-			this.headConetnt = $('<div class="fs-header-left" style="width: 950px;"> <h2>又拍图片中心</h2> <p></p> </div>');
-			this.headConetnt.appendTo(this.header);
-			this.btnClose = $('<a class="fs-close" style="margin-left:960px;">关闭</a>').appendTo(this.header);
-
-			this.menu = $('<div class="fs-menu" />');
-			this.menu.appendTo(this.layoutRight);
-			this.breadCrumbs = $('<div class="fs-breadcrumbs" />');
-			this.breadCrumbs.appendTo(this.menu);
-
-			this.search = $('<div class="fs-search" />');
-			this.search.appendTo(this.menu);
-			this.content = $('<div class="fs-content" style="height:340px;" />').appendTo(this.layoutRight);
-			this.mainContent = $('<div class="fs-content-left" />').appendTo(this.content);
-			this.edit = $('<div class="fs-content-right" />').appendTo(this.content);
-			this.footer = $('<div class="fs-footer" />').appendTo(this.layoutRight);
-			this.tip = $('<span>图片总数：125</span>').appendTo(this.footer);
-			this.btnOk = $('<a href="#" class="fs-confirm">确定</a>').appendTo(this.footer);
-			this.btnCancel = $('<a href="#" class="fs-cancel">取消</a>').appendTo(this.footer);
+			this.headConetnt = $('.fs-header-left',this.layoutRight);
+			this.btnClose = $('.fs-close',this.header);
+			this.menu = $('.fs-menu',this.layoutRight);
+			this.breadCrumbs = $('.fs-breadcrumbs',this.menu);
+			this.search = $('.fs-search',this.menu);
+			this.content = $('.fs-content',this.layoutRight);
+			this.mainContent = $('.fs-content-left',this.content);
+			this.edit = $('.fs-content-right',this.content);
+			console.log(this.edit);
+			this.footer = $('.fs-footer',this.layoutRight);
+			this.tip = $('span',this.footer);
+			this.btnOk = $('.fs-confirm',this.footer);
+			this.btnCancel = $('.fs-cancel',this.footer);
+			this.confirm = $('.fs-cfm',this.layoutRight);
+			this.alert = $('.fs-alert',this.layoutRight);
 		},
 
 		loadData:function(callback){
@@ -95,10 +158,14 @@
 					li.append('<a class="fs-del" href="#" >×</a>');
 					li.css({'width':_this.opts.imgWidth});
 					li.attr('data-name',file.name);
+					li.attr('data-size',file.size);
+					li.attr('data-type',file.type);
+					li.attr('data-time',file.time);
+					li.attr('data-url',file.url);
 
 					var img = $('<img />');
 					if (file.type == 'folder') {
-						img.attr('src','../themes/default/images/Folder.png');
+						img.attr('src',_this._folderICO);
 						li.addClass('fs-folder');
 					} else{
 						img.attr('src',file.url + _this.instance.style);
@@ -140,7 +207,7 @@
 				$('li',_this.mainContent).removeClass('fs-selected');
 			});
 
-			this.panel.delegate('li','click',function(){
+			this.mainContent.delegate('li','click',function(){
 				if (!_this.instance.multi) {
 					$('.fs-selected',_this.mainContent).removeClass('fs-selected');
 				}
@@ -151,6 +218,18 @@
 					_this.mainContent.css({'width':'800px'});
 					_this.fireEvent('onSelected',this);
 				}
+				var type = $(this).attr('data-type');
+				var file = {
+					type:$(this).attr('data-type'),
+					name:$(this).attr('data-name'),
+					url :_this._folderICO,
+					time:upyun.util.formatDate(parseInt($(this).attr('data-time'),10)),
+				}
+				if (type == 'file') {
+					file.url = $(this).attr('data-url') + _this.instance.style;
+					file.size = ( parseInt($(this).attr('data-size'),10) / 1024 ).toFixed(2);
+				}
+				_this._editFile(file);
 			});
 
 
@@ -225,11 +304,9 @@
 		open:function(instanceOpts){
 			this.instance = instanceOpts;
 			this._openFolder('/');
-			// this.loadData();
 			this.cover.show();
-			// this.setupPanel();
+			console.log(this.cover);
 			this.headConetnt.find('p').text(instanceOpts.title);
-			// $(window).resize();
 		},
 		resize:function(){
 		},
@@ -251,9 +328,15 @@
 				_this._curPath = abspath;
 				this.loadData(function(status){
 					if (status === 0) {
+						var dirName = upyun.util.getDirName(abspath);
 						_this._folderStack.push(abspath);
-						_this.breadCrumbs.append('<a href="' + abspath + '">' + upyun.util.getDirName(abspath) + '</a>');
+						
+						_this.breadCrumbs.append('<a href="' + abspath + '">' + dirName + '</a>');
 						_this._setBreadSelected(abspath);
+						_this._editFile({
+							name: dirName == '/' ? '根目录' : dirName,
+							url:_this._folderICO,
+						});
 					}
 					console.log('stack',_this._folderStack);
 				});
@@ -306,6 +389,20 @@
 				_this.prompt.animate({height:0});
 			});
 		},
+		_editFile:function(file){
+			var thumb = $('<img />').attr('src',file.url),
+			info = $('<ul class="fs-info" />');
+			info.append('<li>名称：'+file.name+'</li>');
+			if (file.size > 0) {
+				info.append('<li>大小：'+file.size+'K</li>');
+			}
+			if (file.time) {
+				info.append('<li>创建时间：'+file.time+'</li>');
+			}
+			this.edit.html('');
+			this.edit.append(thumb).append(info);
+			console.log(file);
+		}
 
 
 	};

@@ -25,6 +25,20 @@ upyun.util = {
 			}
 		}
 		return {width:nw,height:nh};
+	},
+	formatDate:function(timestamp){
+		var time = new Date(timestamp*1000),
+		month = time.getMonth()+1,
+		year = time.getFullYear(),
+		day = time.getDate(),
+		hour = time.getHours(),
+		minute = time.getMinutes(),
+		second = time.getSeconds();
+		month = month < 10 ? '0' + month.toString() : month;
+		hour = hour < 10 ? '0' + hour.toString() : hour;
+		minute = minute < 10 ? '0' + minute.toString() : minute;
+		second = second < 10 ? '0' + second.toString() : second;
+		return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
 	}
 };
 
