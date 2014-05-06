@@ -1,9 +1,10 @@
 (function($){
 	"use strict";
 	upyun.uploader = function(element,options){
-		this.holder = $(element);
+		this.trigger = $(element);
 		this.opts = {
-			post:{}
+			post:{},
+            multi:false
 		};
 		this.opts = $.extend(this.opts,options,{});
 		this.init();
@@ -12,16 +13,13 @@
 		init:function(){
 			var _this = this;
 			this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');
-			// this.holder.after(this.uploadPanel);
-			this.holder.click(function(){
+			this.trigger.click(function(){
 				_this.uploadInput.click();
 			});
 			_this.uploadInput.on('change',function(){
-				console.log('change');
 				var formData = new FormData();
 				if (_this.opts.post !== undefined) {
 					$.each(_this.opts.post,function(key,val){
-						console.log(key,val);
 						formData.append(key,val);
 					});
 				}
@@ -52,10 +50,16 @@
 				function onProcess(e){
 					console.log(e);
 					if(e.lengthComputable){
-						_this.holder.text(e.loaded + " / " + e.total);
+						_this.trigger.text(e.loaded + " / " + e.total);
 					}
 				}
 			});
-		}
+		},
+        setOpts:function(options){
+            this.opts = $.extend(this.opts,options,{});
+            if (this.opts.multi) {
+                this.uploadInput.attr('multiple','multiple');
+            }
+        }
 	};
 })(jQuery);

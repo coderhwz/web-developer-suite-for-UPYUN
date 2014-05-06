@@ -90,20 +90,6 @@
 									'<div class="fs-content-left" style="width:800px">'+
 									'</div>'+
 									'<div class="fs-content-right" style="margin-left:800px">'+
-										'<img src="http://bitbucket.b0.upaiyun.com/bizhi-2.jpg!small" />'+
-										'<ul class="fs-info">'+
-											'<li>名称：bizhi-2.jpg</li>'+
-											'<li>名称：bizhi-2.jpg</li>'+
-											'<li>名称：bizhi-2.jpg</li>'+
-										'</ul>'+
-										'<ul class="fs-options">'+
-											'<li>'+
-												'<label>链接' +
-												'<input type="text" class="link" />'+
-												'</label>'+
-											'</li>'+
-										'</ul>'+
-										''+
 									'</div>'+
 								'</div>'+
 								'<div class="fs-footer">'+
@@ -120,6 +106,7 @@
 			this.panel = $('.fs-panel',this.cover);
 			this.layoutLeft = $('.fs-panel-left',this.cover);
 			this.toolbar = $('.fs-tool-bar',this.layoutLeft);
+            this.upload = $('.fs-upload',this.toolbar);
 			
 			this.layoutRight = $('.fs-panel-right',this.cover);
 			this.header = $('.fs-header',this.layoutRight);
@@ -154,31 +141,7 @@
 				}
 				for (var i = 0; i < result.data.length; i++) {
 					var file = result.data[i];
-					var li = $('<li />').appendTo(_this.mainContent);
-					li.append('<a class="fs-del" href="#" >×</a>');
-					li.css({'width':_this.opts.imgWidth});
-					li.attr('data-name',file.name);
-					li.attr('data-size',file.size);
-					li.attr('data-type',file.type);
-					li.attr('data-time',file.time);
-					li.attr('data-url',file.url);
-
-					var img = $('<img />');
-					if (file.type == 'folder') {
-						img.attr('src',_this._folderICO);
-						li.addClass('fs-folder');
-					} else{
-						img.attr('src',file.url + _this.instance.style);
-					}
-					img.attr('alt',file.name);
-					img.attr('title',file.name);
-					img.load(function(){
-						var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
-														_this.opts.imgWidth,_this.opts.imgHeight);
-						$(this).animate(scale);
-					});
-					img.attr('data-name',file.name);
-					li.append(img);
+                    _this._appendFile(file);
 				}
 			});
 		},
@@ -224,7 +187,7 @@
 					name:$(this).attr('data-name'),
 					url :_this._folderICO,
 					time:upyun.util.formatDate(parseInt($(this).attr('data-time'),10)),
-				}
+				};
 				if (type == 'file') {
 					file.url = $(this).attr('data-url') + _this.instance.style;
 					file.size = ( parseInt($(this).attr('data-size'),10) / 1024 ).toFixed(2);
@@ -233,16 +196,13 @@
 			});
 
 
-			new upyun.uploader(this.upload,{
+			this.uploader = new upyun.uploader(this.upload,{
 				api:this.opts.api + '?action=upload',
 				onSuccess:function(result){
 					if (result.error !== 0) {
 						return alert(result.msg);
 					}
-					var li = $('<li><span style="vertical-align:middle;"><img src="'+result.data.url+'" /></span></li>').prependTo(_this.mainContent).click(function(){
-						$(this).toggleClass('fs-selected');
-						_this.fireEvent('onSelected',this); 
-					});
+                    return _this._appendFile(result.data,true);
 				}
 			});
 
@@ -265,7 +225,7 @@
 				return _this._confirm('danger','确定要删除该文件吗？',function(status){
 					console.log(status);
 				});
-				if (confirm('确定要删除该文件吗？')) {
+				/* if (confirm('确定要删除该文件吗？')) {
 					$.post(_this.opts.api + '?action=delete',{path:_this._curPath + $(this).next().attr('data-name') },function(result){
 						result = $.parseJSON(result);
 						if (result.error === 0) {
@@ -274,7 +234,7 @@
 							alert(result.msg);
 						}
 					});
-				}
+				} */
 			});
 
 			this.panel.delegate('li','dblclick',function(){
@@ -349,6 +309,13 @@
 					}
 				});
 			}
+
+            this.uploader.setOpts({
+                multi:true,
+                post:{
+                    path:this._curPath
+                }
+            });
 		},
 		_setBreadSelected:function(path){
 			$('a',this.breadCrumbs).each(function(){
@@ -401,9 +368,52 @@
 			}
 			this.edit.html('');
 			this.edit.append(thumb).append(info);
-			console.log(file);
-		}
+		},
 
+        _appendFile:function(file,isNew){
+            var _this = this,
+                // li = $('<li />').appendTo(_this.mainContent),
+                img = $('<img />');
+            var li = $('<li />');
+            li.append('<a class="fs-del" href="#" >×</a>');
+            li.css({'width':_this.opts.imgWidth});
+            li.attr('data-name',file.name);
+            li.attr('data-size',file.size);
+            li.attr('data-type',file.type);
+            li.attr('data-time',file.time);
+            li.attr('data-url',file.url);
 
-	};
+            if (file.type == 'folder') {
+                img.attr('src',_this._folderICO);
+                li.addClass('fs-folder');
+            } else{
+                img.attr('src',file.url + _this.instance.style);
+            }
+            img.attr('alt',file.name);
+            img.attr('title',file.name);
+            if (file.width && file.height) {
+                var scale = upyun.util.getScale(file.width,file.height ,
+                                                _this.opts.imgWidth,_this.opts.imgHeight);
+                img.css(scale);
+            }else{
+                img.load(function(){
+                    var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
+                                                    _this.opts.imgWidth,_this.opts.imgHeight);
+                                                    $(this).animate(scale);
+                });
+            
+            }
+            img.attr('data-name',file.name);
+            li.append(img);
+            if (isNew) {
+                if (file.type == 'file') {
+                    $('.fs-folder:last',_this.mainContent).after(li);
+                }else{
+                    li.prependTo(_this.mainContent);
+                }
+            }else{
+                li.appendTo(_this.mainContent);
+            }
+        }
+    };
 })(jQuery);

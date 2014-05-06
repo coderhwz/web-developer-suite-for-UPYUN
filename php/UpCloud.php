@@ -55,7 +55,7 @@ class UpCloud {
 		// $this->size = $size;
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '';
 		session_start();
-		// $_SESSION['upyun-cache'] = false;
+        // $_SESSION['upyun-cache'] = false;
 	}
 
 	/**
@@ -201,10 +201,15 @@ class UpCloud {
 		try{
 
 			$this->_fire('preUpload');
-			$response = $this->upyun->writeFile($this->path . $file['name'],
+			$result = $this->upyun->writeFile($this->path . $file['name'],
 				file_get_contents($file['tmp_name']));
+            $response['size'] = $file['size'];
+            $response['time'] = time();
 			$response['url']= $this->host . $this->path . $file['name'] . $this->size;
-			$response['type'] = $file['type'];
+			$response['type'] = 'file';
+            $response['name'] = $file['tmp_name'];
+            $response['width'] = $result['x-upyun-width'];
+            $response['height'] = $result['x-upyun-height'];
 			$this->_fire('postUpload');
 
 			$_SESSION['list'] = false;
