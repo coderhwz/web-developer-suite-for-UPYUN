@@ -166,25 +166,14 @@ upyun.util = {
 									'</div>'+
 									'<a class="fs-close" style="margin-left:960px;">关闭</a>'+
 								'</div>'+
-								'<div class="fs-cfm">'+
-									'<div class="fs-cfm-wrapper">'+
+								'<div class="fs-dialog">'+
+									'<div class="fs-dialog-wrapper">'+
 										'<div class="fs-msg">'+
 											'<i></i>'+
 											'<span>确定要删除吗？</span>'+
 										'</div>'+
-										'<div class="fs-cfm-footer">'+
+										'<div class="fs-dialog-footer">'+
 											'<a href="#" class="fs-cancel">取消</a>'+
-											'<a href="#" class="btn fs-confirm">确定</a>'+
-										'</div>'+
-									'</div>'+
-								'</div>'+
-								'<div class="fs-alert">'+
-									'<div class="fs-alert-wrapper">'+
-										'<div class="fs-msg">'+
-											'<i></i>'+
-											'<span>出了一点问题</span>'+
-										'</div>'+
-										'<div class="fs-alert-footer">'+
 											'<a href="#" class="btn fs-confirm">确定</a>'+
 										'</div>'+
 									'</div>'+
@@ -202,7 +191,7 @@ upyun.util = {
 									'</div>'+
 								'</div>'+
 								'<div class="fs-footer">'+
-									'<span>图片总数：125</span>'+
+									'<span>对象总数：<span class="fs-cnt" >125</span></span>'+
 									'<a class="fs-confirm">确定</a>'+
 									'<a class="fs-cancel">取消</a>'+
 								'</div>'+
@@ -233,8 +222,9 @@ upyun.util = {
 			this.tip = $('span',this.footer);
 			this.btnOk = $('.fs-confirm',this.footer);
 			this.btnCancel = $('.fs-cancel',this.footer);
-			this.confirm = $('.fs-cfm',this.layoutRight);
-			this.alert = $('.fs-alert',this.layoutRight);
+			this.dialog = $('.fs-dialog',this.layoutRight);
+            this._cnt = $('.fs-cnt',this.footer);
+            this.mkdir = $('.fs-mkdir',this.toolbar);
 		},
 
 		loadData:function(callback){
@@ -252,6 +242,7 @@ upyun.util = {
 					var file = result.data[i];
                     _this._appendFile(file);
 				}
+                _this._cnt.text(result.data.length);
 			});
 		},
 
@@ -326,12 +317,27 @@ upyun.util = {
 				event.preventDefault();
 				_this._openFolder($(this).attr('href'));
 			});
+            this.mkdir.click(function(event){
+                event.preventDefault();
+                _this._dialog('prompt','请输入文件夹名称',function(status,val){
+                    $.post(_this.opts.api + '?action=mkdir',{path:_this._curPath,name:val},function(result){
+                        result = $.parseJSON(result);
+                        if (result.error === 0) {
+                            _this._dialog('success',result.msg);
+                            _this._appendFile(result.data,true);
+                        }else{
+                            console.log('result',result);
+                            _this._dialog('error',result.msg);
+                        }
+                    });
+                });
+            });
 
 			this.panel.delegate('.fs-del','click',function(event){
 				event.preventDefault();
 				var $this = $(this);
 				// return _this._alert('danger','失败');
-				return _this._confirm('danger','确定要删除该文件吗？',function(status){
+				return _this._dialog('confirm','确定要删除该文件吗？',function(status){
 					console.log(status);
 				});
 				/* if (confirm('确定要删除该文件吗？')) {
@@ -435,36 +441,43 @@ upyun.util = {
 				}
 			});
 		},
-		_confirm:function(level,msg,callback){
-			var _this = this;
-			this.confirm.animate({height:'150'});
-			this.confirm.undelegate('a','click');
-			this.confirm.delegate('a','click',function(event){
+        /*
+         * level:warn,success,prompt,error,confirm
+         */
+        _dialog:function(level,msg,callback){
+			var _this = this,
+                msgBox = $('.fs-msg',this.dialog),
+                btns = $('a',this.dialog);
+
+            msgBox.attr('class','fs-msg');
+            msgBox.addClass('fs-' + level);
+            msgBox.html('<i></i>');
+            btns.show();
+            console.log('msg',msg);
+            if (level == 'prompt') {
+                msgBox.html('<span>'+msg+'</span><input class="v" type="text" />');
+                $('.fs-cancel',this.dialog).hide();
+            }else{
+                if(level != 'confirm'){
+                    $('.fs-cancel',this.dialog).hide();
+                }
+                msgBox.html('<span>'+msg+'</span>');
+            } 
+
+			this.dialog.animate({height:'150'});
+			this.dialog.undelegate('a','click');
+			this.dialog.delegate('a','click',function(event){
 				event.preventDefault();
-				callback($(this).hasClass('fs-confirm'));
-				_this.confirm.animate({height:0});
+                var input = $('.v',msgBox),val = false;
+                if (input.length > 0) {
+                    val = input.val();
+                }
+                if (callback) {
+                    callback($(this).hasClass('fs-confirm'),val);
+                }
+				_this.dialog.animate({height:0});
 			});
-		},
-		_alert:function(level,msg){
-			var _this = this;
-			this.alert.animate({height:'150'});
-			//可能不需要 这样做 todo
-			this.alert.undelegate('a','click');
-			this.alert.delegate('a','click',function(event){
-				event.preventDefault();
-				_this.alert.animate({height:0});
-			});
-		},
-		_prompt:function(msg){
-			var _this = this;
-			this.prompt.animate({height:'150'});
-			//可能不需要 这样做 todo
-			this.prompt.undelegate('a','click');
-			this.prompt.delegate('a','click',function(event){
-				event.preventDefault();
-				_this.prompt.animate({height:0});
-			});
-		},
+        },
 		_editFile:function(file){
 			var thumb = $('<img />').attr('src',file.url),
 			info = $('<ul class="fs-info" />');
@@ -481,16 +494,17 @@ upyun.util = {
 
         _appendFile:function(file,isNew){
             var _this = this,
-                // li = $('<li />').appendTo(_this.mainContent),
-                img = $('<img />');
-            var li = $('<li />');
+                img = $('<img />'),
+                li = $('<li />'),
+                keys = ['name','size','type','time','url','width','height'];
             li.append('<a class="fs-del" href="#" >×</a>');
             li.css({'width':_this.opts.imgWidth});
-            li.attr('data-name',file.name);
-            li.attr('data-size',file.size);
-            li.attr('data-type',file.type);
-            li.attr('data-time',file.time);
-            li.attr('data-url',file.url);
+            for (var i = 0, len = keys.length; i < len; i++) {
+                var key = keys[i];
+                if (file[key] !== undefined) {
+                    li.attr('data-' + key,file[key]);
+                }
+            }
 
             if (file.type == 'folder') {
                 img.attr('src',_this._folderICO);
@@ -500,6 +514,7 @@ upyun.util = {
             }
             img.attr('alt',file.name);
             img.attr('title',file.name);
+            img.attr('data-name',file.name);
             if (file.width && file.height) {
                 var scale = upyun.util.getScale(file.width,file.height ,
                                                 _this.opts.imgWidth,_this.opts.imgHeight);
@@ -512,7 +527,6 @@ upyun.util = {
                 });
             
             }
-            img.attr('data-name',file.name);
             li.append(img);
             if (isNew) {
                 if (file.type == 'file') {

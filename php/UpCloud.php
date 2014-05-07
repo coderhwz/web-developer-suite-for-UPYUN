@@ -144,11 +144,12 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	private function dispatcher() {
-		$actions = array('delete','upload','list');
+		$actions = array('delete','upload','list','mkdir','rmdir');
 		$action = $_GET['action'];
 		if (in_array($action,$actions)) {
 			$this->{'action_' . $action}();
 		}else{
+            $this->error('不支持操作');
 		}
 
 	}
@@ -249,7 +250,20 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	public function action_mkdir() {
-
+        $name = trim($_POST['name']);
+        if ($name) {
+            try {
+                $result = $this->upyun->makeDir($this->path . $name);
+                $this->delCache($this->path);
+                $this->success('创建成功!',array(
+                    'name'=>$name,
+                    'time'=>time(),
+                    'type'=>'folder',
+                ));
+            } catch (UpYunException $e) {
+                $this->error($this->_getErrorMsg($e));
+            }
+        }
 	}
 
 	/**
