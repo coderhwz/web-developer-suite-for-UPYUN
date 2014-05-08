@@ -195,10 +195,10 @@
 				}
 			});
 
-			this.panel.delegate('li','mouseenter',function(event){
+			this.mainContent.delegate('li','mouseenter',function(event){
 				$(this).addClass('fs-hover');
 			});
-			this.panel.delegate('li','mouseleave',function(){
+			this.mainContent.delegate('li','mouseleave',function(){
 				$(this).removeClass('fs-hover');
 			});
 
@@ -370,6 +370,15 @@
 			}
 			this.edit.html('');
 			this.edit.append(thumb).append(info);
+            if (this.instance.richEditor && file.type == 'file') {
+                var meta = $('<ul class="fs-meta" />');
+                meta.append('<li><label>宽度：<input class="fs-width" type="text" /></label></li>');
+                meta.append('<li><label>高度：<input class="fs-height" type="text" /></label></li>');
+                meta.append('<li><label>链接：<input class="fs-href" value="'+file.url+'" type="text" /></label></li>');
+                meta.append('<li><label>代替文本：<input class="fs-alt" value="'+file.name+'" type="text" /></label></li>');
+                meta.append('<li><label>新标签中打开：<input class="fs-blank" value="" type="checkbox" /></label></li>');
+                this.edit.append(meta);
+            }
 		},
 
         _appendFile:function(file,isNew){

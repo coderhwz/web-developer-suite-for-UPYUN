@@ -122,9 +122,12 @@ a {
 	list-style:none;
 	padding:5px 0;
 }
-.fs-info {
+.fs-info,.fs-meta {
 	color:#aaa;
 	font-size:6px;
+}
+.fs-meta input{
+    width:97%;
 }
 .fs-menu {
     margin-top: 20px;

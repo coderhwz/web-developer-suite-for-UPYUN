@@ -33,6 +33,7 @@
                     editor.execCommand( 'inserthtml',image);
                 }
             };
+            options.richEditor = true;
             btn.click(function(event){
                 _upanel.open(options);
             });
