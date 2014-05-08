@@ -91,7 +91,6 @@
 					'</div>';
 			this._body = $('body');
 			this.cover = $(tpl).appendTo(this._body);
-			console.log(this.cover);
 			this.panel = $('.fs-panel',this.cover);
 			this.layoutLeft = $('.fs-panel-left',this.cover);
 			this.toolbar = $('.fs-tool-bar',this.layoutLeft);
@@ -108,7 +107,6 @@
 			this.content = $('.fs-content',this.layoutRight);
 			this.mainContent = $('.fs-content-left',this.content);
 			this.edit = $('.fs-content-right',this.content);
-			console.log(this.edit);
 			this.footer = $('.fs-footer',this.layoutRight);
 			this.tip = $('span',this.footer);
 			this.btnOk = $('.fs-confirm',this.footer);
@@ -217,7 +215,6 @@
                             _this._dialog('success',result.msg);
                             _this._appendFile(result.data,true);
                         }else{
-                            console.log('result',result);
                             _this._dialog('error',result.msg);
                         }
                     });
@@ -242,7 +239,7 @@
 				if ($(this).hasClass('fs-folder')) {
 					_this._openFolder(_this._curPath + '/' + $(this).attr('data-name') + '/');
 				}else{
-					var url = $(this).find('img').attr('src');
+					var url = $(this).attr('data-url');
 					_this.fireEvent('onOK',[url]);
 					_this.close();
 					$('li',_this.mainContent).removeClass('fs-selected');
@@ -266,7 +263,6 @@
 			this.instance = instanceOpts;
 			this._openFolder('/');
 			this.cover.show();
-			console.log(this.cover);
 			this.headConetnt.find('p').text(instanceOpts.title);
 		},
 		resize:function(){
@@ -299,7 +295,6 @@
 							url:_this._folderICO,
 						});
 					}
-					console.log('stack',_this._folderStack);
 				});
 			}else{
 				_this._curPath = abspath;
@@ -339,7 +334,6 @@
             msgBox.addClass('fs-' + level);
             msgBox.html('<i></i>');
             btns.show();
-            console.log('msg',msg);
             if (level == 'prompt') {
                 msgBox.html('<span>'+msg+'</span><input class="v" type="text" />');
                 $('.fs-cancel',this.dialog).hide();

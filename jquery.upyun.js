@@ -1,5 +1,10 @@
 (function($){
 	$.fn.upyun = function (options) {
+        if (window._upanel === undefined) {
+            window._upanel = new upyun.panel({
+                api:options.api,
+            });
+        }
 		return this.each(function () {
 			var opts = {
 				style:'!small',
@@ -8,11 +13,6 @@
 
 			var element = $(this);
 			opts = $.extend(opts,options,{});
-			if (window._upanel === undefined) {
-				window._upanel = new upyun.panel({
-					api:opts.api,
-				});
-			}
 
 			opts.title = opts.title || element.attr('data-title') || '请选择图片';
 

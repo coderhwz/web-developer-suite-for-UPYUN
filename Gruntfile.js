@@ -17,7 +17,7 @@ module.exports = function(grunt) {
 				options: {
 					'-W083': true,
 				},
-				src: ['uploader.js','panel.js','upyun.js','jquery.upyun.js'],
+				src: ['uploader.js','panel.js','upyun.js','jquery.upyun.js','ueditor.js','kindeditor.js'],
 			},
 			// afterconcat: ['dist/uploader.min.js']
 		},
@@ -35,7 +35,7 @@ module.exports = function(grunt) {
 				footer:"})(jQuery);"
 			},
 			dist: {
-				src: ['upyun.js','uploader.js','panel.js','jquery.upyun.js'],
+				src: ['upyun.js','uploader.js','panel.js','jquery.upyun.js','ueditor.js','kindeditor.js'],
 				dest: 'dist/upyun.js',
 			},
 		},

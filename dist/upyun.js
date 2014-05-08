@@ -43,69 +43,72 @@ upyun.util = {
 };
 
 ;(function($){
-	"use strict";
-	upyun.uploader = function(element,options){
-		this.trigger = $(element);
-		this.opts = {
-			post:{},
+    "use strict";
+    upyun.uploader = function(element,options){
+        this.trigger = $(element);
+        this.opts = {
+            post:{},
             multi:false
-		};
-		this.opts = $.extend(this.opts,options,{});
-		this.init();
-	};
-	upyun.uploader.prototype = {
-		init:function(){
-			var _this = this;
-			this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');
-			this.trigger.click(function(){
-				_this.uploadInput.click();
-			});
-			_this.uploadInput.on('change',function(){
-				var formData = new FormData();
-				if (_this.opts.post !== undefined) {
-					$.each(_this.opts.post,function(key,val){
-						formData.append(key,val);
-					});
-				}
-				formData.append('file',this.files[0]);
-				$.ajax({
-					url: _this.opts.api, 
-					type: 'POST',
-					xhr: function() {  
-						var _xhr = $.ajaxSettings.xhr();
-						if(_xhr.upload){ 
-							_xhr.upload.addEventListener('progress',onProcess, false); 
-						}
-						return _xhr;
-					},
-					success: function(result) {
-						console.log($.ajaxSettings.xhr().upload);
-						result = $.parseJSON(result);
-						if (_this.opts.onSuccess) {
-							_this.opts.onSuccess(result);
-						}
-					},
-					data: formData,
-					cache: false,
-					contentType: false,
-					processData: false
-				});
+        };
+        this.opts = $.extend(this.opts,options,{});
+        this.init();
+    };
+    upyun.uploader.prototype = {
+        init:function(){
+            var _this = this;
+            this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');
+            this.trigger.click(function(){
+                _this.uploadInput.click();
+            });
+            _this.uploadInput.on('change',function(){
+                for (var i = 0, len = this.files.length; i < len; i++) {
+                    var formData = new FormData();
+                    if (_this.opts.post !== undefined) {
+                        $.each(_this.opts.post,function(key,val){
+                            formData.append(key,val);
+                        });
+                    }
+                    formData.append('file',this.files[i]);
+                    $.ajax({
+                        url: _this.opts.api, 
+                        type: 'POST',
+                        xhr: function() {  
+                            var _xhr = $.ajaxSettings.xhr();
+                            if(_xhr.upload){ 
+                                _xhr.upload.addEventListener('progress',onProcess, false); 
+                            }
+                            return _xhr;
+                        },
+                        success: function(result) {
+                            console.log($.ajaxSettings.xhr().upload);
+                            result = $.parseJSON(result);
+                            if (_this.opts.onSuccess) {
+                                _this.opts.onSuccess(result);
+                            }
+                        },
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
 
-				function onProcess(e){
-					console.log(e);
-					if(e.lengthComputable){
-						_this.trigger.text(e.loaded + " / " + e.total);
-					}
-				}
-			});
-		},
+
+                }
+                function onProcess(e){
+                    /* console.log(e);
+                    if(e.lengthComputable){
+                        _this.trigger.text(e.loaded + " / " + e.total);
+                    } */
+                }
+            });
+        },
         setOpts:function(options){
             this.opts = $.extend(this.opts,options,{});
             if (this.opts.multi) {
                 this.uploadInput.attr('multiple','multiple');
             }
         }
-	};
+    };
 })(jQuery);
 ;(function($){
 	"use strict";
@@ -200,7 +203,6 @@ upyun.util = {
 					'</div>';
 			this._body = $('body');
 			this.cover = $(tpl).appendTo(this._body);
-			console.log(this.cover);
 			this.panel = $('.fs-panel',this.cover);
 			this.layoutLeft = $('.fs-panel-left',this.cover);
 			this.toolbar = $('.fs-tool-bar',this.layoutLeft);
@@ -217,7 +219,6 @@ upyun.util = {
 			this.content = $('.fs-content',this.layoutRight);
 			this.mainContent = $('.fs-content-left',this.content);
 			this.edit = $('.fs-content-right',this.content);
-			console.log(this.edit);
 			this.footer = $('.fs-footer',this.layoutRight);
 			this.tip = $('span',this.footer);
 			this.btnOk = $('.fs-confirm',this.footer);
@@ -306,10 +307,10 @@ upyun.util = {
 				}
 			});
 
-			this.panel.delegate('li,img','mouseenter',function(){
+			this.panel.delegate('li','mouseenter',function(event){
 				$(this).addClass('fs-hover');
 			});
-			this.panel.delegate('li,img','mouseout',function(){
+			this.panel.delegate('li','mouseleave',function(){
 				$(this).removeClass('fs-hover');
 			});
 
@@ -326,7 +327,6 @@ upyun.util = {
                             _this._dialog('success',result.msg);
                             _this._appendFile(result.data,true);
                         }else{
-                            console.log('result',result);
                             _this._dialog('error',result.msg);
                         }
                     });
@@ -336,27 +336,22 @@ upyun.util = {
 			this.panel.delegate('.fs-del','click',function(event){
 				event.preventDefault();
 				var $this = $(this);
-				// return _this._alert('danger','失败');
 				return _this._dialog('confirm','确定要删除该文件吗？',function(status){
-					console.log(status);
+                    if (status ) {
+                        _this._deleteFile($this.next().attr('data-name'),function(status){
+                            if (status ) {
+                                $this.parent().remove();
+                            }
+                        });
+                    }
 				});
-				/* if (confirm('确定要删除该文件吗？')) {
-					$.post(_this.opts.api + '?action=delete',{path:_this._curPath + $(this).next().attr('data-name') },function(result){
-						result = $.parseJSON(result);
-						if (result.error === 0) {
-							$this.parent().remove();
-						}else{
-							alert(result.msg);
-						}
-					});
-				} */
 			});
 
 			this.panel.delegate('li','dblclick',function(){
 				if ($(this).hasClass('fs-folder')) {
 					_this._openFolder(_this._curPath + '/' + $(this).attr('data-name') + '/');
 				}else{
-					var url = $(this).find('img').attr('src');
+					var url = $(this).attr('data-url');
 					_this.fireEvent('onOK',[url]);
 					_this.close();
 					$('li',_this.mainContent).removeClass('fs-selected');
@@ -380,7 +375,6 @@ upyun.util = {
 			this.instance = instanceOpts;
 			this._openFolder('/');
 			this.cover.show();
-			console.log(this.cover);
 			this.headConetnt.find('p').text(instanceOpts.title);
 		},
 		resize:function(){
@@ -413,7 +407,6 @@ upyun.util = {
 							url:_this._folderICO,
 						});
 					}
-					console.log('stack',_this._folderStack);
 				});
 			}else{
 				_this._curPath = abspath;
@@ -453,7 +446,6 @@ upyun.util = {
             msgBox.addClass('fs-' + level);
             msgBox.html('<i></i>');
             btns.show();
-            console.log('msg',msg);
             if (level == 'prompt') {
                 msgBox.html('<span>'+msg+'</span><input class="v" type="text" />');
                 $('.fs-cancel',this.dialog).hide();
@@ -537,11 +529,29 @@ upyun.util = {
             }else{
                 li.appendTo(_this.mainContent);
             }
+        },
+        _deleteFile:function(name,callback){
+            var _this = this;
+            $.post(this.opts.api + '?action=delete',{path:this._curPath ,name:name },function(result){
+                result = $.parseJSON(result);
+                if (result.error === 0) {
+                    callback(true);
+                    _this._dialog('success',"删除成功");
+                }else{
+                    callback(false);
+                    _this._dialog('error',result.msg);
+                }
+            });
         }
     };
 })(jQuery);
 ;(function($){
 	$.fn.upyun = function (options) {
+        if (window._upanel === undefined) {
+            window._upanel = new upyun.panel({
+                api:options.api,
+            });
+        }
 		return this.each(function () {
 			var opts = {
 				style:'!small',
@@ -550,11 +560,6 @@ upyun.util = {
 
 			var element = $(this);
 			opts = $.extend(opts,options,{});
-			if (window._upanel === undefined) {
-				window._upanel = new upyun.panel({
-					api:opts.api,
-				});
-			}
 
 			opts.title = opts.title || element.attr('data-title') || '请选择图片';
 
@@ -568,4 +573,45 @@ upyun.util = {
 		}); 
     };
 })(jQuery);
+;(function($){
+    'use strict';
+    if (upyun.setUpUEditor === undefined) {
+        UE.setUpUEditor = function(){
+            console.log(this);
+        };
+        upyun.setUpUEditor = function(editor,options){
+            var html = 
+                '<div  class="edui-box edui-button edui-for-upyun edui-default">'+
+                    '<div class="edui-default">'+
+                        '<div class="edui-button-wrap edui-default">'+
+                            '<div unselectable="on" title="又拍" class="edui-button-body edui-default">'+
+                                '<div class="edui-box edui-icon edui-default"></div>'+
+                                '<div class="edui-box edui-label edui-default"></div>'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>',
+            toolbar = $('.edui-toolbar'),
+            btn = $(html);
+            if (toolbar.length < 1) {
+                console.log('集成 UEDITOR 失败');
+                return false;
+            }
+            btn.appendTo(toolbar);
+            $('.edui-icon',btn).css('background-image','url(../themes/default/images/logo.png)');
+            $('.edui-icon',btn).css('background-size','cover');
+            options.onOK = function(files){
+                for (var i = 0, len = files.length; i < len; i++) {
+                    var image = '<a target="#target#" href="#href#"><img #width# #height# alt="#alt#" src="#src#"></a>';
+                    image = image.replace('#href#',files[i])
+                                .replace('#src#',files[i]);
+                    editor.execCommand( 'inserthtml',image);
+                }
+            };
+            btn.click(function(event){
+                _upanel.open(options);
+            });
+        };
+    }
 })(jQuery);
+;})(jQuery);

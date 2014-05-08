@@ -13,71 +13,39 @@
 
 		<!-- <script src="../dist/upyun.min.js" type="text/javascript" charset="utf-8"></script> -->
 
-		<!-- <script src="./ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
+        <script src="./ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
 		<script src="./ueditor/ueditor.all.min.js" type="text/javascript" charset="utf-8"></script>
-		<script type="text/javascript" src="./ueditor/lang/zh-cn/zh-cn.js"></script> -->
+		<script src="./ueditor/lang/zh-cn/zh-cn.js" type="text/javascript" ></script>
 
-		<!-- <script src="./kindeditor/kindeditor-all-min.js" type="text/javascript" charset="utf-8"></script> -->
+        <script src="./kindeditor/kindeditor-all-min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../ueditor.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../kindeditor.js" type="text/javascript" charset="utf-8"></script>
+
 		
 	</head>
 	<body>
 		<div class="wrapper">
 			<input type="text" style="margin-left:800px" class="upyun" value="">
-			<!-- <div class="demo-head"><h1>又拍开发者套件演示</h1><a href="#" class="like">喜欢</a></div> -->
-			<!-- <div class="demo-body"> -->
-				<!-- <div class="section"> -->
-					<!-- <div class="example"> -->
-						<!-- <input type="text" class="upyun" name="picture" value=""> -->
-					<!-- </div> -->
-					<!-- <div class="code"> -->
-						<!-- <pre> -->
-						<!-- </pre> -->
-						
-					<!-- </div> -->
-				<!-- </div> -->
-				<!-- <input data-title="请选择封面图片" type="text" class="upyun" name="picture" value=""> -->
-				<!-- <img id="holder" src="" width="120" /> -->
-				<!-- <input type="text" class="upyun" name="picture" value=""> -->
-			<!-- </div> -->
-			<!-- <textarea name="Name" id="ueditor" rows="8" cols="40"></textarea> -->
-			<!-- <textarea name="Name" id="kindeditor" rows="8" cols="40"></textarea> -->
-			<!-- <div> -->
-			<!-- </div> -->
+            <textarea name="" id="u-content"></textarea>
+            <textarea name="" id="keditor"></textarea>
+
 		</div>
-		<!-- <div class="mc-dialog">
-			<div class="mc-header">
-				又拍文件管理
-				<span class="mc-close">X</span>
-			</div>
-			<div class="mc-body">
-				<ul>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-					<li> <img src="../images/sophie.jpeg" height="120" width="120" /> </li>
-				</ul>
-			</div>
-			<div class="mc-footer"> 
-				<button class="mc-btn-ok">确定</button>
-				<button class="mc-btn-cancel">取消</button>
-			</div>
-		</div> -->
-		<!-- <div class="mc-cover"> </div> -->
 		<script type="text/javascript" charset="utf-8">
 			$('.upyun').upyun({
 				api:'/media-center-for-upyun/php/api.php',
 				panel:true
 			});
-			/*var editor = UE.getEditor('ueditor')
-			KindEditor.ready(function(K) {
-                window.editor = K.create('#kindeditor');
-			});*/
+            var editor = UE.getEditor('u-content');
+            editor.addListener( 'ready', function() {
+                upyun.setUpUEditor(this,{
+                    api:'/media-center-for-upyun/php/api.php',
+                    panel:true,
+                    style:'!small'
+                });
+            } );
+            KindEditor.ready(function(K) {
+                window.keditor = K.create('#keditor');
+            });
 
 /*$('#demo').upyun({
 	api:'/api.php',  
