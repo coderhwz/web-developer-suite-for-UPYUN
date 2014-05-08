@@ -227,20 +227,15 @@
 			this.panel.delegate('.fs-del','click',function(event){
 				event.preventDefault();
 				var $this = $(this);
-				// return _this._alert('danger','失败');
 				return _this._dialog('confirm','确定要删除该文件吗？',function(status){
-					console.log(status);
+                    if (status ) {
+                        _this._deleteFile($this.next().attr('data-name'),function(status){
+                            if (status ) {
+                                $this.parent().remove();
+                            }
+                        });
+                    }
 				});
-				/* if (confirm('确定要删除该文件吗？')) {
-					$.post(_this.opts.api + '?action=delete',{path:_this._curPath + $(this).next().attr('data-name') },function(result){
-						result = $.parseJSON(result);
-						if (result.error === 0) {
-							$this.parent().remove();
-						}else{
-							alert(result.msg);
-						}
-					});
-				} */
 			});
 
 			this.panel.delegate('li','dblclick',function(){
@@ -428,6 +423,19 @@
             }else{
                 li.appendTo(_this.mainContent);
             }
+        },
+        _deleteFile:function(name,callback){
+            var _this = this;
+            $.post(this.opts.api + '?action=delete',{path:this._curPath ,name:name },function(result){
+                result = $.parseJSON(result);
+                if (result.error === 0) {
+                    callback(true);
+                    _this._dialog('success',"删除成功");
+                }else{
+                    callback(false);
+                    _this._dialog('error',result.msg);
+                }
+            });
         }
     };
 })(jQuery);

@@ -41,7 +41,7 @@ class UpCloud {
 		'User blocked'=>'操作员被禁用',
 		'Image Rotate Invalid Parameters'=>'图片旋转参数错误',
 		'Image Crop Invalid Parameters'=>'图片裁剪参数错误',
-		'Not Found'=>'获取文件或目录不存在；上传文件或目录时上级目录不存在',
+		'Not Found'=>'获取文件或目录不存在',
 		'Not Acceptable'=>'目录错误（创建目录时已存在同名文件；或上传文件时存在同名目录)',
 		'System Error'=>'系统错误',
 	);
@@ -59,7 +59,7 @@ class UpCloud {
 	}
 
 	/**
-	 * 响应一个错误,错误响应将立即停止执行
+	 * 响应一个错误
 	 *
 	 * @param $msg string 
 	 * @return void
@@ -230,10 +230,11 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	public function action_delete() {
-		$path = $_POST['path'];
-		if ($path) {
+        $name = trim($_POST['name']);
+		if ($name) {
 			try{
-				$this->upyun->delete($path);
+				$this->upyun->delete($this->path . $name);
+                $this->delCache($this->path);
 				$this->success();
 
 			}catch(UpYunException $e){
