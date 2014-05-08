@@ -197,10 +197,10 @@
 				}
 			});
 
-			this.panel.delegate('li,img','mouseenter',function(){
+			this.panel.delegate('li','mouseenter',function(event){
 				$(this).addClass('fs-hover');
 			});
-			this.panel.delegate('li,img','mouseout',function(){
+			this.panel.delegate('li','mouseleave',function(){
 				$(this).removeClass('fs-hover');
 			});
 

@@ -177,6 +177,7 @@ a.fs-cancel {
 	padding:2px 3px;
 	text-align:center;
 	position:relative;
+    border-radius:3px;
 }
 .cur-bread{
 	background-color:#fff !important;
@@ -210,6 +211,7 @@ a.fs-cancel {
     color: #fff;
 }
 .fs-del{
+    display:none;
 	position:absolute;
 	top:0;
 	right:0;
@@ -222,4 +224,13 @@ a.fs-cancel {
     line-height: 20px;
     border-radius: 10px;
     border: 1px solid #f1f1f1;
+}
+.fs-hover{
+    background-color:#5f9ea0;
+}
+.fs-hover .fs-del{
+    display:block;
+}
+.fs-selected{
+    background-color:#5f9ea0;
 }
