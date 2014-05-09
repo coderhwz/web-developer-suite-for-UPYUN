@@ -39,6 +39,17 @@ upyun.util = {
 		minute = minute < 10 ? '0' + minute.toString() : minute;
 		second = second < 10 ? '0' + second.toString() : second;
 		return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
-	}
+	},
+    checkOpts:function(options){
+        var defaults = {
+            title:'请选择图片',
+            panelLogo:'../themes/default/images/logo.png',
+            editorIcon:'../themes/default/images/logo.png',
+            tWidth:120,
+            tHeight:74,
+            multiSelect:false,
+        };
+        return $.extend(options,defaults,{});
+    }
 };
 

@@ -17,7 +17,10 @@
 			opts.title = opts.title || element.attr('data-title') || '请选择图片';
 
 			opts.onOK = opts.onOK || function(images){
-				element.val(images[0]);
+                for (var i = 0, len = images.length; i < len; i++) {
+                    var image = images[i];
+                    element.val(image.url);
+                }
 			};
 
 			element.click(function(){

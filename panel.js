@@ -8,8 +8,6 @@
 			label_ok:"确定",
 			label_upload:"上传文件",
 			multi:false,
-			imgWidth:120,
-			imgHeight:74,
 		};
 		this._events = {};
 		this._folderStack = [];
@@ -17,14 +15,11 @@
 		this.opts = $.extend(this.opts,options,{});
 		this._curPath = '/';
 		this._folderICO = '../themes/default/images/Folder.png';
-		this.init();
 		this.setupPanel();
 		// this.loadData();
 		this.eventHandle();
 	};
 	upyun.panel.prototype={
-		init:function(){
-		},
 		setupPanel:function(){
 
 			var _this = this;
@@ -114,6 +109,7 @@
 			this.dialog = $('.fs-dialog',this.layoutRight);
             this._cnt = $('.fs-cnt',this.footer);
             this.mkdir = $('.fs-mkdir',this.toolbar);
+            this.logo = $('.fs-logo',this.layoutLeft);
 		},
 
 		loadData:function(callback){
@@ -154,7 +150,15 @@
 				$('.fs-selected img',_this.mainContent).each(function(index,value){
 					urls.push(this.src);
 				});
-				_this.fireEvent('onOK',urls);
+                var file = {
+                    url:$('.fs-image').attr('src'),
+                    width:$('.fs-width').val(),
+                    height:$('.fs-height').val(),
+                    alt:$('.fs-alt').val(),
+                    href:$('.fs-href').val(),
+                    blank:$('.fs-blank').val(),
+                };
+				_this.fireEvent('onOK',[file]);
 				_this.close();
 				$('li',_this.mainContent).removeClass('fs-selected');
 			});
@@ -178,7 +182,7 @@
 					time:upyun.util.formatDate(parseInt($(this).attr('data-time'),10)),
 				};
 				if (type == 'file') {
-					file.url = $(this).attr('data-url') + _this.instance.style;
+					file.url = $(this).attr('data-url');
 					file.size = ( parseInt($(this).attr('data-size'),10) / 1024 ).toFixed(2);
 				}
 				_this._editFile(file);
@@ -240,7 +244,7 @@
 					_this._openFolder(_this._curPath + '/' + $(this).attr('data-name') + '/');
 				}else{
 					var url = $(this).attr('data-url');
-					_this.fireEvent('onOK',[url]);
+					_this.fireEvent('onOK',[{url:url}]);
 					_this.close();
 					$('li',_this.mainContent).removeClass('fs-selected');
 				}
@@ -260,7 +264,11 @@
 			this.cover.hide();
 		},
 		open:function(instanceOpts){
-			this.instance = instanceOpts;
+            var opts = upyun.util.checkOpts(instanceOpts);
+            this._applyOpts(opts);
+            console.log(opts);
+			this.instance = opts;
+            console.log(opts);
 			this._openFolder('/');
 			this.cover.show();
 			this.headConetnt.find('p').text(instanceOpts.title);
@@ -359,7 +367,7 @@
 			});
         },
 		_editFile:function(file){
-			var thumb = $('<img />').attr('src',file.url),
+			var thumb = $('<img class="fs-image" />').attr('src',file.url),
 			info = $('<ul class="fs-info" />');
 			info.append('<li>名称：'+file.name+'</li>');
 			if (file.size > 0) {
@@ -369,7 +377,7 @@
 				info.append('<li>创建时间：'+file.time+'</li>');
 			}
 			this.edit.html('');
-			this.edit.append(thumb).append(info);
+			this.edit.append(info)
             if (this.instance.richEditor && file.type == 'file') {
                 var meta = $('<ul class="fs-meta" />');
                 meta.append('<li><label>宽度：<input class="fs-width" type="text" /></label></li>');
@@ -378,7 +386,12 @@
                 meta.append('<li><label>代替文本：<input class="fs-alt" value="'+file.name+'" type="text" /></label></li>');
                 meta.append('<li><label>新标签中打开：<input class="fs-blank" value="" type="checkbox" /></label></li>');
                 this.edit.append(meta);
+                thumb.load(function(){
+                    $('.fs-width').val(this.width);
+                    $('.fs-height').val(this.height);
+                });
             }
+            this.edit.prepend(thumb);
 		},
 
         _appendFile:function(file,isNew){
@@ -387,7 +400,7 @@
                 li = $('<li />'),
                 keys = ['name','size','type','time','url','width','height'];
             li.append('<a class="fs-del" href="#" >×</a>');
-            li.css({'width':_this.opts.imgWidth});
+            li.css({'width':_this.instance.tWidth});
             for (var i = 0, len = keys.length; i < len; i++) {
                 var key = keys[i];
                 if (file[key] !== undefined) {
@@ -406,12 +419,12 @@
             img.attr('data-name',file.name);
             if (file.width && file.height) {
                 var scale = upyun.util.getScale(file.width,file.height ,
-                                                _this.opts.imgWidth,_this.opts.imgHeight);
+                                                _this.instance.tWidth,_this.instance.tHeight);
                 img.css(scale);
             }else{
                 img.load(function(){
                     var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
-                                                    _this.opts.imgWidth,_this.opts.imgHeight);
+                                                    _this.instance.tWidth,_this.instance.tHeight);
                                                     $(this).animate(scale);
                 });
             
@@ -439,6 +452,9 @@
                     _this._dialog('error',result.msg);
                 }
             });
+        },
+        _applyOpts:function(options){
+            $('img',this.logo).attr('src',options.panelLogo);
         }
     };
 })(jQuery);
