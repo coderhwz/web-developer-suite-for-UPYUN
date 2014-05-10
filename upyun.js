@@ -44,12 +44,23 @@ upyun.util = {
         var defaults = {
             title:'请选择图片',
             panelLogo:'../themes/default/images/logo.png',
-            editorIcon:'../themes/default/images/logo.png',
+            editorIcon:'../themes/default/images/cloud.png',
             tWidth:120,
             tHeight:74,
             multiSelect:false,
+            multiUpload:false,
         };
-        return $.extend(options,defaults,{});
+        return $.extend(defaults,options,{});
+    },
+    urlConcat:function(url,params){
+        url = url.split('#')[0];
+
+        if (url.indexOf('?') === -1) {
+            return [url,params].join('?');
+        }else{
+            return [url,params].join('&');
+        }
     }
+
 };
 

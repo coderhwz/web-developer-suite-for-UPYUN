@@ -14,7 +14,7 @@
 			var element = $(this);
 			opts = $.extend(opts,options,{});
 
-			opts.title = opts.title || element.attr('data-title') || '请选择图片';
+			opts.title = element.attr('data-title');
 
 			opts.onOK = opts.onOK || function(images){
                 for (var i = 0, len = images.length; i < len; i++) {

@@ -1,9 +1,6 @@
 (function($){
     'use strict';
     if (upyun.setUpUEditor === undefined) {
-        UE.setUpUEditor = function(){
-            console.log(this);
-        };
         upyun.setUpUEditor = function(editor,options){
             var html = 
                 '<div  class="edui-box edui-button edui-for-upyun edui-default">'+

@@ -3,38 +3,90 @@
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 	
 		<title>又拍云开发者套件-演示</title>
-		<link rel="stylesheet" href="./style.css" type="text/css" media="screen" charset="utf-8">
-		<link rel="stylesheet" href="../themes/default/style.css" type="text/css" media="screen" charset="utf-8">
 		<script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-1.7.2.min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../upyun.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../panel.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../uploader.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../jquery.upyun.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" href="./bs/css/bootstrap-theme.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
+        <link rel="stylesheet" href="./bs/css/bootstrap.min.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-		<!-- <script src="../dist/upyun.min.js" type="text/javascript" charset="utf-8"></script> -->
+        <script src="./bs/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+        <link rel="stylesheet" href="./style.css" type="text/css" media="screen" charset="utf-8">
+		<link rel="stylesheet" href="../themes/default/style.css" type="text/css" media="screen" charset="utf-8">
+
+        <script src="../upyun.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../panel.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../uploader.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../jquery.upyun.js" type="text/javascript" charset="utf-8"></script>
+
 
         <script src="./ueditor/ueditor.config.js" type="text/javascript" charset="utf-8"></script>
 		<script src="./ueditor/ueditor.all.min.js" type="text/javascript" charset="utf-8"></script>
 		<script src="./ueditor/lang/zh-cn/zh-cn.js" type="text/javascript" ></script>
 
         <script src="./kindeditor/kindeditor-all-min.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../ueditor.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../kindeditor.js" type="text/javascript" charset="utf-8"></script>
+
+        <script src="../ueditor.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../kindeditor.js" type="text/javascript" charset="utf-8"></script>
+        <!-- <script src="../dist/upyun.js" type="text/javascript" charset="utf-8"></script> -->
 
 		
 	</head>
 	<body>
-		<div class="wrapper">
-			<input type="text" style="margin-left:800px" class="upyun" value="">
-            <textarea name="" id="u-content"></textarea>
-            <textarea name="" id="keditor"></textarea>
-
-		</div>
-		<script type="text/javascript" charset="utf-8">
-			$('.upyun').upyun({
-				api:'/media-center-for-upyun/php/api.php',
-				panel:true
-			});
+            <div class="container">
+                <div class="row clearfix">
+                    <div class="col-md-12 column">
+                        <div class="page-header">
+                            <h1>
+                                又拍开发者套件 <small>云接管</small>
+                            </h1>
+                        </div>
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <div class="row clearfix">
+                                    <div class="col-md-4 column">
+                                        <form role="form">
+                                            <div class="form-group">
+                                                 <input type="email" data-title="请选择封面图片" class="upyun form-control" placeholder="封面图片" />
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-8 column">
+                                        <code>
+&lt;script type="text/javascript" charset="utf-8"&gt;                                 &lt;/script&gt;
+                                        </code>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        <h3>UEditor</h3>
+                                        <textarea name="" id="u-content"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        相关说明 
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        <h3>KindEditor</h3>
+                                        <textarea width="100%" name="" id="keditor"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row clearfix">
+                                    <div class="col-md-12 column">
+                                        相关说明 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <script type="text/javascript" charset="utf-8">
+            $('.upyun').upyun({
+                api:'/media-center-for-upyun/php/api.php',
+                panel:true
+            });
             var editor = UE.getEditor('u-content');
             editor.addListener( 'ready', function() {
                 upyun.setUpUEditor(this,{
@@ -44,24 +96,15 @@
                 });
             } );
             KindEditor.ready(function(K) {
-                window.keditor = K.create('#keditor');
+                var keditor = K.create('#keditor',{
+                    width:'100%'
+                });
+                upyun.setUpKEditor(keditor,{
+                    api:'/media-center-for-upyun/php/api.php',
+                    panel:true,
+                    style:'!small'
+                });
             });
-
-/*$('#demo').upyun({
-	api:'/api.php',  
-	panel:{
-		title:'',
-		logo:'',
-		name:'媒体管理',
-		folder:'true|false',
-		onOK:function(images_with_meta){},
-		onSelect:function(){},
-		onClose:function(){},
-	},
-	sizeLimit:'1000M',
-
-});*/
-		</script>
-		<!-- <input type="text" data-prompt="" name="some_name" value=""> -->
+        </script>
 	</body>
 </html>

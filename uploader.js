@@ -4,15 +4,15 @@
         this.trigger = $(element);
         this.opts = {
             post:{},
-            multi:false
+            multiUpload:false
         };
-        this.opts = $.extend(this.opts,options,{});
+        this.opts = $.extend(this.opts,options,{}); 
         this.init();
     };
     upyun.uploader.prototype = {
         init:function(){
             var _this = this;
-            this.uploadInput = $('<input type="file"  class="hide mc-upload-holder">');
+            this.uploadInput = $('<input type="file" class="hide mc-upload-holder">');
             this.trigger.click(function(){
                 _this.uploadInput.click();
             });
@@ -60,7 +60,7 @@
         },
         setOpts:function(options){
             this.opts = $.extend(this.opts,options,{});
-            if (this.opts.multi) {
+            if (this.opts.multiUpload) {
                 this.uploadInput.attr('multiple','multiple');
             }
         }

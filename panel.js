@@ -1,18 +1,9 @@
 (function($){
     "use strict";
     upyun.panel = function(options){
-        this.opts = {
-            cover:true,
-            title:'又拍图片中心',
-            label_cancel:"取消",
-            label_ok:"确定",
-            label_upload:"上传文件",
-            multi:false,
-        };
         this._events = {};
         this._folderStack = [];
 
-        this.opts = $.extend(this.opts,options,{});
         this._curPath = '/';
         this._folderICO = '../themes/default/images/Folder.png';
         this.setupPanel();
@@ -60,7 +51,7 @@
                                         '</div>'+
                                         '<div class="fs-dialog-footer">'+
                                             '<a href="#" class="fs-cancel">取消</a>'+
-                                            '<a href="#" class="btn fs-confirm">确定</a>'+
+                                            '<a href="#" class="fs-confirm">确定</a>'+
                                         '</div>'+
                                     '</div>'+
                                 '</div>'+
@@ -113,10 +104,10 @@
         },
 
         loadData:function(callback){
+            if (this.loading) {return;}
             var _this = this;
-            if (_this.loading) {return;}
             _this.loading = true;
-            $.post(this.opts.api + '?action=list',{path:_this._curPath},function(result){
+            $.post(this._getUrl('list'),{path:_this._curPath},function(result){
                 _this.loading = false;
                 result = $.parseJSON(result);
                 callback(result.error);
@@ -164,7 +155,7 @@
             });
 
             this.mainContent.delegate('li','click',function(){
-                if (!_this.instance.multi) {
+                if (!_this.instance.multiSelect) {
                     $('.fs-selected',_this.mainContent).removeClass('fs-selected');
                 }
                 $(this).toggleClass('fs-selected');
@@ -190,7 +181,6 @@
 
 
             this.uploader = new upyun.uploader(this.upload,{
-                api:this.opts.api + '?action=upload',
                 onSuccess:function(result){
                     if (result.error !== 0) {
                         return alert(result.msg);
@@ -213,7 +203,7 @@
             this.mkdir.click(function(event){
                 event.preventDefault();
                 _this._dialog('prompt','请输入文件夹名称',function(status,val){
-                    $.post(_this.opts.api + '?action=mkdir',{path:_this._curPath,name:val},function(result){
+                    $.post(_this._getUrl('mkdir'),{path:_this._curPath,name:val},function(result){
                         result = $.parseJSON(result);
                         if (result.error === 0) {
                             _this._dialog('success',result.msg);
@@ -266,12 +256,9 @@
         open:function(instanceOpts){
             var opts = upyun.util.checkOpts(instanceOpts);
             this._applyOpts(opts);
-            console.log(opts);
             this.instance = opts;
-            console.log(opts);
             this._openFolder('/');
             this.cover.show();
-            this.headConetnt.find('p').text(instanceOpts.title);
         },
         resize:function(){
         },
@@ -314,8 +301,10 @@
                 });
             }
 
+
             this.uploader.setOpts({
-                multi:true,
+                api:this._getUrl('upload'),
+                multiUpload:true,
                 post:{
                     path:this._curPath
                 }
@@ -377,7 +366,7 @@
                 info.append('<li>创建时间：'+file.time+'</li>');
             }
             this.edit.html('');
-            this.edit.append(info)
+            this.edit.append(info);
             if (this.instance.richEditor && file.type == 'file') {
                 var meta = $('<ul class="fs-meta" />');
                 meta.append('<li><label>宽度：<input class="fs-width" type="text" /></label></li>');
@@ -442,7 +431,7 @@
         },
         _deleteFile:function(name,callback){
             var _this = this;
-            $.post(this.opts.api + '?action=delete',{path:this._curPath ,name:name },function(result){
+            $.post(this._getUrl('delete'),{path:this._curPath ,name:name },function(result){
                 result = $.parseJSON(result);
                 if (result.error === 0) {
                     callback(true);
@@ -455,6 +444,10 @@
         },
         _applyOpts:function(options){
             $('img',this.logo).attr('src',options.panelLogo);
+            this.headConetnt.find('p').text(options.title);
+        },
+        _getUrl:function(action){
+            return upyun.util.urlConcat(this.instance.api,'action=' + action);
         }
     };
 })(jQuery);
