@@ -45,6 +45,7 @@ upyun.util = {
             title:'请选择图片',
             panelLogo:'../themes/default/images/logo.png',
             editorIcon:'../themes/default/images/cloud.png',
+            folderIcon:'../themes/default/images/Folder.png',
             tWidth:120,
             tHeight:74,
             multiSelect:false,
@@ -60,7 +61,22 @@ upyun.util = {
         }else{
             return [url,params].join('&');
         }
+    },
+    renderImg:function(file){
+        var image = '<a target="#target#" href="#href#"><img #width# #height# alt="#alt#" src="#src#"></a>';
+        file.href = file.href || '';
+        file.alt = file.alt || '';
+        file.width = file.width ? 'width="'+file.width+'"' : '';
+        file.height = file.height ? 'height="'+file.height+'"' : '';
+        file.blank = file.blank || '';
+        return image.replace('#href#',file.href)
+                    .replace('#src#',file.url)
+                    .replace('#alt#',file.alt)
+                    .replace('#target#',file.blank)
+                    .replace('#width#',file.width)
+                    .replace('#height#',file.height);
     }
+
 
 };
 

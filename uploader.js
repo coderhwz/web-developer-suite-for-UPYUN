@@ -51,10 +51,6 @@
 
                 }
                 function onProcess(e){
-                    /* console.log(e);
-                    if(e.lengthComputable){
-                        _this.trigger.text(e.loaded + " / " + e.total);
-                    } */
                 }
             });
         },

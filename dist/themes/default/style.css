@@ -85,6 +85,8 @@ a {
     text-align: center;
     color: #fff;
     float: left;
+    height:40px;
+    line-height:40px;
 }
 .fs-header-left p {
     margin-left: 15%;
@@ -238,3 +240,9 @@ a.fs-cancel {
 .fs-selected{
     background-color:#5f9ea0;
 }
+/* .ke-icon-upyun {
+      background-image: url(./skins/default.gif);
+      background-position: 0px -672px;
+      width: 16px;
+      height: 16px;
+} */
