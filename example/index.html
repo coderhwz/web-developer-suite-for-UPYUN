@@ -84,13 +84,13 @@
             </div>
         <script type="text/javascript" charset="utf-8">
             $('.upyun').upyun({
-                api:'/media-center-for-upyun/php/api.php',
+                api:'/php/api.php',
                 panel:true
             });
             var editor = UE.getEditor('u-content');
             editor.addListener( 'ready', function() {
                 upyun.setUpUEditor(this,{
-                    api:'/media-center-for-upyun/php/api.php',
+                    api:'/php/api.php',
                     panel:true,
                     style:'!small'
                 });
@@ -100,7 +100,7 @@
                     width:'100%'
                 });
                 upyun.setUpKEditor(keditor,{
-                    api:'/media-center-for-upyun/php/api.php',
+                    api:'/php/api.php',
                     panel:true,
                     style:'!small'
                 });

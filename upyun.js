@@ -38,7 +38,7 @@ upyun.util = {
 		hour = hour < 10 ? '0' + hour.toString() : hour;
 		minute = minute < 10 ? '0' + minute.toString() : minute;
 		second = second < 10 ? '0' + second.toString() : second;
-		return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+        return [year,month,day].join('-') + ' ' + [hour,minute,second].join(':');
 	},
     checkOpts:function(options){
         var defaults = {

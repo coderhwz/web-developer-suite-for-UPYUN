@@ -46,13 +46,10 @@ class UpCloud {
 		'System Error'=>'系统错误',
 	);
 
-	function __construct($bucket,$name,$pwd,$host,$size) {
-		include('upyun.class.php');
+	function __construct($bucket,$name,$pwd,$host) {
 
-		// todo 文件类型限制 ，文件大小限制 
 		$this->upyun = new UpYun($bucket,$name,$pwd);
 		$this->host = $host;
-		// $this->size = $size;
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '';
 		session_start();
         // $_SESSION['upyun-cache'] = false;
@@ -162,7 +159,6 @@ class UpCloud {
 	 **/
 	protected function action_list(){
 		$this->path = isset($_POST['path']) ? $_POST['path'] : '/';
-		// var_dump($_SESSION);
 		$this->path = rtrim($this->path,'/') . '/';
 
 		$list = $this->getCache($this->path);
@@ -171,7 +167,7 @@ class UpCloud {
 		} else{
 			$this->_fire('preGetList');
 			$list = $this->upyun->getList($this->path);
-			$this->_fire('postGetList',$list);
+			$this->_fire('postGetList',array($list));
 			$folders = array();
 			$files = array();
 			foreach ($list as $item) {
@@ -201,7 +197,7 @@ class UpCloud {
 		$file = $_FILES['file'];
 		try{
 
-			$this->_fire('preUpload');
+			$this->_fire('preUpload',array($file));
 			$result = $this->upyun->writeFile($this->path . $file['name'],
 				file_get_contents($file['tmp_name']));
             $response['size'] = $file['size'];
@@ -211,7 +207,7 @@ class UpCloud {
             $response['name'] = $file['tmp_name'];
             $response['width'] = $result['x-upyun-width'];
             $response['height'] = $result['x-upyun-height'];
-			$this->_fire('postUpload');
+			$this->_fire('postUpload',array($response));
 
 			$_SESSION['list'] = false;
 			$this->success('上传成功',$response);
@@ -297,10 +293,15 @@ class UpCloud {
 	 * @return void
 	 * @author hwz
 	 **/
-	private function _fire($mixed,$params = null) {
-		if (is_callable($mixed)) {
-			// todo 传递 $this给回调
-			call_user_func_array($mixed,$params);
+	private function _fire($name,$params = null) {
+        $callback = $this->_events[$name];
+		if (is_callable($callback)) {
+            if ($params) {
+                array_unshift($params,$this);
+            }else{
+                $params = array($this);
+            }
+            call_user_func_array($callback,$params);
 		}
 	}
 
