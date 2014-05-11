@@ -1,8 +1,9 @@
 # 又拍开发者套件
 
 ## 简介
-又拍开发者套件希望能够使用开发者和用户更方便的使用又拍云服务。套件前端基于jQuery,
+`又拍开发者套件`希望能够使用开发者和用户更方便的使用又拍云服务。套件前端基于jQuery,
 后端封装了`upyun.class.php`,前后端约定以某一简单协议进行交互,目前支持`jQuery调用`, `百度UEditor`和`KindEditor`
+目前[GitCafe](http://www.gitcafe.com)是本项目唯一公开的代码托管，可以尽情提交工单^_^。[项目DEMO](http://www.coderhwz.com/upyun/example)
 
 ![示例图](./screenshot.png)
 
@@ -93,6 +94,7 @@ javascript 扩展
             onOK:function(){},         // 选择图片后回调
         };
 ```
+百度UEditor和Kindeditor的参数与以上参数一致，视情况将其中一些不需要的参数忽略
 
 ### 服务端
 基础调用 
