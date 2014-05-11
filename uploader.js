@@ -23,9 +23,7 @@
                         $.each(_this.opts.post,function(key,val){
                             formData.append(key,val);
                         });
-                    }
-                    formData.append('file',this.files[i]);
-                    $.ajax({
+                    } formData.append('file',this.files[i]); $.ajax({
                         url: _this.opts.api, 
                         type: 'POST',
                         xhr: function() {  
@@ -56,9 +54,11 @@
         },
         setOpts:function(options){
             this.opts = $.extend(this.opts,options,{});
+            var multiUpload = '';
             if (this.opts.multiUpload) {
-                this.uploadInput.attr('multiple','multiple');
+                multiUpload = 'multiple';
             }
+            this.uploadInput.attr('multiple','multiple');
         }
     };
 })(jQuery);

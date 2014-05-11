@@ -50,12 +50,13 @@ upyun.util = {
             tHeight:74,
             multiSelect:false,
             multiUpload:false,
+            style:'!small',
+            theme:'default',
         };
         return $.extend(defaults,options,{});
     },
     urlConcat:function(url,params){
         url = url.split('#')[0];
-
         if (url.indexOf('?') === -1) {
             return [url,params].join('?');
         }else{

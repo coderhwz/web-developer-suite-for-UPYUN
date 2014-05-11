@@ -14,7 +14,7 @@
 HTML
 ```html
     <script src="dist/upyun.min.js" type="text/javascript" charset="utf-8"></script>
-    <link rel="stylesheet" href="dist/themes/default/style.css" type="text/css" media="screen" charset="utf-8">
+
     <input type="text" class="upyun" />
     <textarea id="u-content"></textarea>
     <textarea id="keditor"></textarea>
@@ -129,4 +129,8 @@ javascript 扩展
     // 开始接管
     $upCloud->takeOver();
 ```
-
+## 接下来要做的
+1. 测试
+2. 分离默认主题中的必要样式
+3. 化操作体验
+4. 功能上添加一个过滤器,当前文件夹中文件搜索

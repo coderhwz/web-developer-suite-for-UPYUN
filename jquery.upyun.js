@@ -1,20 +1,14 @@
 (function($){
-	$.fn.upyun = function (options) {
+	$.fn.upyun = function (opts) {
         if (window._upanel === undefined) {
-            window._upanel = new upyun.panel({
-                api:options.api,
-            });
+            //目前不能动态的改主题
+            window._upanel = new upyun.panel(opts.theme);
         }
 		return this.each(function () {
-			var opts = {
-				style:'!small',
-				multi:false
-			};
-
-			var element = $(this);
-			opts = $.extend(opts,options,{});
-
-			opts.title = element.attr('data-title');
+			var element = $(this),
+                holder = opts.holder || element.attr('data-holder');
+			opts.title = opts.title || element.attr('data-title');
+            opts.api = opts.api || element.attr('data-api');
 
 			opts.onOK = opts.onOK || function(images){
                 for (var i = 0, len = images.length; i < len; i++) {

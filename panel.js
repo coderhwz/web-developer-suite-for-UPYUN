@@ -6,10 +6,15 @@
  */
 (function($){
     "use strict";
-    upyun.panel = function(options){
+    upyun.panel = function(theme){
         this._stack = [];
+        this._theme = 'default';
+        if (theme) {
+            this._theme = theme;
+        }
         this._curPath = '/';
         this._setup();
+
         this.eventHandle();
     };
     upyun.panel.prototype={
@@ -338,6 +343,7 @@
         _applyOpts:function(options){
             $('img',this.logo).attr('src',options.panelLogo);
             this.headConetnt.find('p').text(options.title);
+            this.uploader.setOpts({multiSelect:options.multiSelect});
         },
         _getUrl:function(action){
             return upyun.util.urlConcat(this.now.api,'action=' + action);
@@ -351,6 +357,7 @@
             if (t._g('cover').length > 0 ) {
                 return ;
             }
+            $('head').append('<link rel="stylesheet" href="../themes/'+this._theme+'/style.css" type="text/css" media="screen">');
             var tpl = 
                     '<div style="display:none;" class="fs-cover">'+
                         '<div class="fs-panel" style="height:500px;width:1120px;">'+

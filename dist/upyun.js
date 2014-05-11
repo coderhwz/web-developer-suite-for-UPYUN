@@ -1,4 +1,4 @@
-(function(){/* code by hwz */
+/* code by hwz */
 
 window.upyun = window.upyun || {};
 
@@ -50,12 +50,13 @@ upyun.util = {
             tHeight:74,
             multiSelect:false,
             multiUpload:false,
+            style:'!small',
+            theme:'default',
         };
         return $.extend(defaults,options,{});
     },
     urlConcat:function(url,params){
         url = url.split('#')[0];
-
         if (url.indexOf('?') === -1) {
             return [url,params].join('?');
         }else{
@@ -105,9 +106,7 @@ upyun.util = {
                         $.each(_this.opts.post,function(key,val){
                             formData.append(key,val);
                         });
-                    }
-                    formData.append('file',this.files[i]);
-                    $.ajax({
+                    } formData.append('file',this.files[i]); $.ajax({
                         url: _this.opts.api, 
                         type: 'POST',
                         xhr: function() {  
@@ -138,9 +137,11 @@ upyun.util = {
         },
         setOpts:function(options){
             this.opts = $.extend(this.opts,options,{});
+            var multiUpload = '';
             if (this.opts.multiUpload) {
-                this.uploadInput.attr('multiple','multiple');
+                multiUpload = 'multiple';
             }
+            this.uploadInput.attr('multiple','multiple');
         }
     };
 })(jQuery);
@@ -152,10 +153,15 @@ upyun.util = {
  */
 (function($){
     "use strict";
-    upyun.panel = function(options){
+    upyun.panel = function(theme){
         this._stack = [];
+        this._theme = 'default';
+        if (theme) {
+            this._theme = theme;
+        }
         this._curPath = '/';
         this._setup();
+
         this.eventHandle();
     };
     upyun.panel.prototype={
@@ -484,6 +490,7 @@ upyun.util = {
         _applyOpts:function(options){
             $('img',this.logo).attr('src',options.panelLogo);
             this.headConetnt.find('p').text(options.title);
+            this.uploader.setOpts({multiSelect:options.multiSelect});
         },
         _getUrl:function(action){
             return upyun.util.urlConcat(this.now.api,'action=' + action);
@@ -497,6 +504,7 @@ upyun.util = {
             if (t._g('cover').length > 0 ) {
                 return ;
             }
+            $('head').append('<link rel="stylesheet" href="../themes/'+this._theme+'/style.css" type="text/css" media="screen">');
             var tpl = 
                     '<div style="display:none;" class="fs-cover">'+
                         '<div class="fs-panel" style="height:500px;width:1120px;">'+
@@ -588,22 +596,16 @@ upyun.util = {
     };
 })(jQuery);
 ;(function($){
-	$.fn.upyun = function (options) {
+	$.fn.upyun = function (opts) {
         if (window._upanel === undefined) {
-            window._upanel = new upyun.panel({
-                api:options.api,
-            });
+            //目前不能动态的改主题
+            window._upanel = new upyun.panel(opts.theme);
         }
 		return this.each(function () {
-			var opts = {
-				style:'!small',
-				multi:false
-			};
-
-			var element = $(this);
-			opts = $.extend(opts,options,{});
-
-			opts.title = element.attr('data-title');
+			var element = $(this),
+                holder = opts.holder || element.attr('data-holder');
+			opts.title = opts.title || element.attr('data-title');
+            opts.api = opts.api || element.attr('data-api');
 
 			opts.onOK = opts.onOK || function(images){
                 for (var i = 0, len = images.length; i < len; i++) {
@@ -683,5 +685,4 @@ upyun.util = {
             _upanel.open(options);
         });
     };
-})(jQuery);
 })(jQuery);

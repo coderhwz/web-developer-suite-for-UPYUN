@@ -30,9 +30,9 @@ module.exports = function(grunt) {
 		},
 		concat: {
 			options: {
-				separator: ';',
-				banner:"(function(){",
-				footer:"})(jQuery);"
+				separator: ';'
+				/* banner:"(function(){",
+				footer:"})(jQuery);" */
 			},
 			dist: {
 				src: ['upyun.js','uploader.js','panel.js','jquery.upyun.js','ueditor.js','kindeditor.js'],

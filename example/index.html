@@ -9,7 +9,6 @@
 
         <script src="./bs/js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
         <link rel="stylesheet" href="./style.css" type="text/css" media="screen" charset="utf-8">
-		<link rel="stylesheet" href="../themes/default/style.css" type="text/css" media="screen" charset="utf-8">
 
         <script src="../upyun.js" type="text/javascript" charset="utf-8"></script>
         <script src="../panel.js" type="text/javascript" charset="utf-8"></script>
@@ -97,7 +96,7 @@
         <script type="text/javascript" charset="utf-8">
             $('.upyun').upyun({
                 api:'/php/api.php',
-                panel:true
+                multiUpload:true,
             });
             var editor = UE.getEditor('u-content');
             editor.addListener( 'ready', function() {
