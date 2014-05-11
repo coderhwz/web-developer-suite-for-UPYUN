@@ -130,7 +130,7 @@
                 var $this = $(this);
                 return _this._dialog('confirm','确定要删除该文件吗？',function(status){
                     if (status ) {
-                        _this._deleteFile($this.next()._d('name'),function(status){
+                        _this._deleteFile($this.parent()._d('name'),function(status){
                             if (status ) {
                                 $this.parent().remove();
                             }
@@ -204,7 +204,7 @@
                 if ($(this).attr('href') == path) {
                     $(this).addClass('cur-bread');
                 }
-            })
+            });
             this.uploader.setOpts({
                 api:this._getUrl('upload'),
                 post:{
@@ -426,7 +426,7 @@
             t.edit        = t._g('content-right');
             t.footer      = t._g('footer');
             t.tip         = $('span',this.footer);
-            t.btnOk       = t._g('confirm');
+            t.btnOk       = $('.fs-confirm',this.footer);
             t.btnCancel   = t._g('cancel');
             t.dialog      = t._g('dialog');
             t._cnt        = t._g('cnt');
