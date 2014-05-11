@@ -12,19 +12,18 @@
 ### 前端
 HTML
 ```html
-	<script src="dist/upyun.min.js" type="text/javascript" charset="utf-8"></script>
-	<link rel="stylesheet" href="dist/themes/default/style.css" type="text/css" media="screen" charset="utf-8">
-	<input type="text" class="upyun" />
+    <script src="dist/upyun.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="dist/themes/default/style.css" type="text/css" media="screen" charset="utf-8">
+    <input type="text" class="upyun" />
     <textarea id="u-content"></textarea>
     <textarea id="keditor"></textarea>
 ```
 
 jQuery
 ```javascript
-
-	$('.upyun').upyun({
-		api:'/php/api.php'
-	});
+    $('.upyun').upyun({
+        api:'/php/api.php'
+    });
 ```
 百度UEditor
 ```javascript
@@ -57,12 +56,12 @@ php
 <?php
 
     include('upyun.class.php');
-	include('UpCloud.php');
+    include('UpCloud.php');
 
-	$upCloud = new UpCloud(BUCKET,NAME,PWD,HOST);
-	$upCloud->takeOver();
+    $upCloud = new UpCloud(BUCKET,NAME,PWD,HOST);
+    $upCloud->takeOver();
 
-	//End of file 
+    //End of file 
 ```
 
 
@@ -77,8 +76,11 @@ html 扩展
 2. `data-title` 面板标题
 3. `data-holder` 选择图片后图片放入指定容器值为ID
 4. `data-filter` 过滤器 {type:['png']}(实现中)
+
 javascript 扩展
+
 ```javascript
+
         var opts = {
             title:'请选择图片',        // 面板标题
             panelLogo:'~/logo.png',    // 面板左上角logo
