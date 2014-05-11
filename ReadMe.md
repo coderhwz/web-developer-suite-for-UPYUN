@@ -54,8 +54,7 @@ KindEditor
 ### 服务端
 php
 ```php
-	
-	<?php
+<?php
 
     include('upyun.class.php');
 	include('UpCloud.php');
@@ -96,16 +95,17 @@ javascript 扩展
 ### 服务端
 基础调用 
 ```php
+<?php
+    include('upyun.class.php');
+    include('UpCloud.php');
 
-include('upyun.class.php');
-include('UpCloud.php');
-
-$upCloud = new UpCloud(BUCKET,NAME,PWD,HOST,SIZE);
-$upCloud->takeOver();
+    $upCloud = new UpCloud(BUCKET,NAME,PWD,HOST,SIZE);
+    $upCloud->takeOver();
 ```
 
 添加hook,处理函数都可以得到UpCloud $this 实例
 ```php
+<?php
     include('upyun.class.php');
     include('UpCloud.php');
 
