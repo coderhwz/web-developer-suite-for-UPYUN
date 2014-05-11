@@ -50,7 +50,7 @@ a {
 }
 .fs-tool-bar a {
     border-bottom: 1px solid #e3e3e3;
-    font-size: 6px;
+    font-size: 12px;
     color: #aaa;
     display: block;
     text-align: center;
@@ -127,7 +127,7 @@ a {
 }
 .fs-info,.fs-meta {
 	color:#aaa;
-	font-size:6px;
+	font-size:12px;
 }
 .fs-meta input{
     width:97%;
