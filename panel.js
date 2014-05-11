@@ -14,11 +14,11 @@
     };
     upyun.panel.prototype={
 
-        loadData:function(callback){
+        loadData:function(path,callback){
             if (this.loading) {return;}
             var _this = this;
             _this.loading = true;
-            $.post(this._getUrl('list'),{path:_this._curPath},function(result){
+            $.post(this._getUrl('list'),{path:path},function(result){
                 _this.loading = false;
                 result = $.parseJSON(result);
                 callback(result.error);
@@ -172,57 +172,43 @@
         },
         //传入绝对地址
         _openFolder:function(abspath){
+            var _this = this;
             abspath = abspath.replace('//','/');
-            var _pos = this._stack.indexOf(abspath),
-            _this = this;
+            this.loadData(abspath,function(status){
+                if (status === 0) {
+                    _this._setPath(abspath);
+                }
+            });
+
+        },
+        _setPath:function(path){
+            var _pos = this._stack.indexOf(path),
+                    breads = $('a',this.breadCrumbs);
             //当前文件夹
             if (_pos < 0) {
                 var _curPos = this._stack.indexOf(this._curPath),
-                    level = abspath.split('/').length -1 ;
+                    level = path.split('/').length -1 ;
                 this._stack.splice(level-1);
-                $('a',this.breadCrumbs).each(function(i,el){
+                breads.each(function(i,el){
                     if (i >= level-1) {
                         el.remove();
                     }
                 });
-                _this._curPath = abspath;
-                this.loadData(function(status){
-                    if (status === 0) {
-                        var dirName = upyun.util.getDirName(abspath);
-                        _this._stack.push(abspath);
-                        _this.breadCrumbs.append('<a href="' + abspath + '">' + dirName + '</a>');
-                        _this._setBreadSelected(abspath);
-                        _this._editFile({
-                            name: dirName == '/' ? '根目录' : dirName,
-                            url:_this.now.folderIcon,
-                        });
-                    }
-                });
-            }else{
-                _this._curPath = abspath;
-                this.loadData(function(status){
-                    if (status === 0) {
-                        //设置当前面包
-                        _this._setBreadSelected(abspath);
-                    }
-                });
+                this._curPathName = upyun.util.getDirName(path);
+                this._stack.push(path);
+                this.breadCrumbs.append('<a href="' + path + '">' + this._curPathName + '</a>');
             }
-
-
+            this._curPath = path;
+            breads.removeClass('cur-bread');
+            $('a',this.breadCrumbs).each(function(){
+                if ($(this).attr('href') == path) {
+                    $(this).addClass('cur-bread');
+                }
+            })
             this.uploader.setOpts({
                 api:this._getUrl('upload'),
-                multiUpload:true,
                 post:{
-                    path:this._curPath
-                }
-            });
-        },
-        _setBreadSelected:function(path){
-            $('a',this.breadCrumbs).each(function(){
-                if ($(this).attr('href') == path){
-                    $(this).addClass('cur-bread');
-                }else{
-                    $(this).removeClass('cur-bread');
+                    path:path
                 }
             });
         },

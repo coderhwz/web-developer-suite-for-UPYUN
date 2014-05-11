@@ -208,8 +208,7 @@ class UpCloud {
             $response['width'] = $result['x-upyun-width'];
             $response['height'] = $result['x-upyun-height'];
 			$this->_fire('postUpload',array($response));
-
-			$_SESSION['list'] = false;
+            $this->delCache($this->path);
 			$this->success('上传成功',$response);
 
 		}catch(UpYunException $e){
@@ -294,6 +293,9 @@ class UpCloud {
 	 * @author hwz
 	 **/
 	private function _fire($name,$params = null) {
+        if (!isset($this->_events[$name])) {
+            return false;
+        }
         $callback = $this->_events[$name];
 		if (is_callable($callback)) {
             if ($params) {
