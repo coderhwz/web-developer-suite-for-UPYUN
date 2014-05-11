@@ -11,30 +11,34 @@
 ## 一分钟入门
 
 ### 前端
-HTML:
+```html
 
 	<script src="dist/upyun.min.js" type="text/javascript" charset="utf-8"></script>
 	<link rel="stylesheet" href="dist/themes/default/style.css" type="text/css" media="screen" charset="utf-8">
 	<input type="text" class="upyun" />
-JS:
+```
+
+```javascript
 
 	$('.upyun').upyun({
-		api:'/media-center-for-upyun/php/api.php'
-	});`
+		api:'/php/api.php'
+	});
+```
 
 
 ### 服务端
-PHP:
+```php
 	
 	<?php
 
-	include('config.php');
+    include('upyun.class.php');
 	include('UpCloud.php');
 
-	$upCloud = new UpCloud(BUCKET,NAME,PWD,HOST,SIZE);
+	$upCloud = new UpCloud(BUCKET,NAME,PWD,HOST);
 	$upCloud->takeOver();
 
 	//End of file 
+```
 
 
 ## 扩展

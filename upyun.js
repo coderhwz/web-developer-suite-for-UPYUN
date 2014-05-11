@@ -1,6 +1,6 @@
 /* code by hwz */
 
-var upyun = window.upyun || {};
+window.upyun = window.upyun || {};
 
 upyun.util = {
 	getDirName:function(path){
