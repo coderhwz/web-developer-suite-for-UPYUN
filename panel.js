@@ -313,10 +313,12 @@
                 img.load(function(){
                     var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
                                                     _this.now.tWidth,_this.now.tHeight);
-                                                    $(this).animate(scale);
+                                                    $(this).css(scale);
+                                                    $(this).show();
                 });
             
             }
+            img.hide();
             li.append(img);
             if (isNew) {
                 if (file.type == 'file') {

@@ -285,6 +285,7 @@ upyun.util = {
                         _this._deleteFile($this.parent()._d('name'),function(status){
                             if (status ) {
                                 $this.parent().remove();
+                                _this._cnt.text(parseInt(_this._cnt.text(),10) - 1);
                             }
                         });
                     }
@@ -459,10 +460,12 @@ upyun.util = {
                 img.load(function(){
                     var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
                                                     _this.now.tWidth,_this.now.tHeight);
-                                                    $(this).animate(scale);
+                                                    $(this).css(scale);
+                                                    $(this).show();
                 });
             
             }
+            img.hide();
             li.append(img);
             if (isNew) {
                 if (file.type == 'file') {
@@ -470,6 +473,7 @@ upyun.util = {
                 }else{
                     li.prependTo(_this.objsHolder);
                 }
+                _this._cnt.text(parseInt(_this._cnt.text(),10) + 1);
             }else{
                 li.appendTo(_this.objsHolder);
             }
