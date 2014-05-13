@@ -233,7 +233,6 @@
             btns.show();
             if (level == 'prompt') {
                 msgBox.html('<span>'+msg+'</span><input class="v" type="text" />');
-                $('.cancel',this.dialog).hide();
             }else{
                 if(level != 'confirm'){
                     $('.cancel',this.dialog).hide();
@@ -283,6 +282,51 @@
             this.edit.prepend(thumb);
         },
 
+        _appendThumb:function(file,isNew){
+            if (file.type == 'file') {
+                return this._appendThumb(file,isNew);
+            }
+            var _this = this,
+                img = $('<img />'),
+                loading = $('<img class="thumb-loading" />'),
+                li = $('<li class="item" />'),
+                keys = ['name','size','type','time','url','width','height'];
+            li.append('<a class="delete" href="#" >×</a>');
+            li.css({
+                'width':_this.now.tWidth,
+                'height':_this.now.tHeight,
+            });
+
+            loading.attr('src',_this.now.loadingIcon);
+            li.append(loading);
+            for (var i = 0; i < keys.length; i++) {
+                var key = keys[i];
+                if (file[key] !== undefined) {
+                    li.attr('data-' + key,file[key]);
+                }
+            }
+            img.attr('src',file.url + _this.now.style);
+            img.attr('alt',file.name);
+            img.attr('title',file.name);
+            img._d('name',file.name);
+            img.load(function(){
+                var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
+                                                _this.now.tWidth,_this.now.tHeight);
+                scale = {width:scale.width*0.9,height:scale.height*0.9}
+                $(this).css(scale);
+                $(this).show();
+                loading.remove();
+            });
+
+            img.hide();
+            li.append(img);
+            if (isNew) {
+                $('.folder:last',_this.objsHolder).after(li);
+                _this._cnt.text(parseInt(_this._cnt.text(),10) + 1);
+            }else{
+                li.appendTo(_this.objsHolder);
+            }
+        },
         _appendFile:function(file,isNew){
             var _this = this,
                 img = $('<img />'),
@@ -479,7 +523,7 @@
             t.footer      = t._g('footer');
             t.tip         = $('span',this.footer);
             t.btnOk       = $('.confirm',this.footer);
-            t.btnCancel   = t._g('cancel');
+            t.btnCancel   = $('.cancel',this.footer);
             t.dialog      = t._g('dialog');
             t._cnt        = t._g('cnt');
             t.mkdir       = t._g('mkdir');
