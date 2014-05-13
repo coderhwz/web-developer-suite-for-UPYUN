@@ -1,7 +1,7 @@
 /*
  * 约定 :
  *     t === this 
- *     t._g('a') === $('.fs-a',this.cover)
+ *     t._g('a') === $('.a',this.cover)
  *     $._d('a') === $(this).attr('data-a')
  */
 (function($){
@@ -13,6 +13,7 @@
             this._theme = theme;
         }
         this._curPath = '/';
+        this.idoc = null;
         this._setup();
 
         this.eventHandle();
@@ -54,7 +55,7 @@
                 var t = _this;
                 event.preventDefault();
                 /* var urls = [];
-                $('.fs-selected img',_this.objsHolder).each(function(index,value){
+                $('.selected img',_this.objsHolder).each(function(index,value){
                     urls.push(this.src);
                 }); */
                 var file = {
@@ -71,10 +72,10 @@
 
             this.objsHolder.delegate('li','click',function(){
                 if (!_this.now.multiSelect) {
-                    $('.fs-selected',_this.objsHolder).removeClass('fs-selected');
+                    $('.selected',_this.objsHolder).removeClass('selected');
                 }
-                $(this).toggleClass('fs-selected');
-                if ($('.fs-selected',_this.objsHolder).length < 1){
+                $(this).toggleClass('selected');
+                if ($('.selected',_this.objsHolder).length < 1){
                     _this.objsHolder.css({'width':'auto'});
                 }else{
                     _this.objsHolder.css({'width':'800px'});
@@ -105,10 +106,10 @@
             });
 
             this.objsHolder.delegate('li','mouseenter',function(event){
-                $(this).addClass('fs-hover');
+                $(this).addClass('hover');
             });
             this.objsHolder.delegate('li','mouseleave',function(){
-                $(this).removeClass('fs-hover');
+                $(this).removeClass('hover');
             });
 
             this.breadCrumbs.delegate('a','click',function(event){
@@ -130,7 +131,7 @@
                 });
             });
 
-            this.objsHolder.delegate('.fs-del','click',function(event){
+            this.objsHolder.delegate('.delete','click',function(event){
                 event.preventDefault();
                 var $this = $(this);
                 return _this._dialog('confirm','确定要删除该文件吗？',function(status){
@@ -146,7 +147,7 @@
             });
 
             this.objsHolder.delegate('li','dblclick',function(){
-                if ($(this).hasClass('fs-folder')) {
+                if ($(this).hasClass('folder')) {
                     _this._openFolder(_this._curPath + '/' + $(this)._d('name') + '/');
                 }else{
                     var url = $(this)._d('url');
@@ -166,7 +167,7 @@
         },
 
         close:function(){
-            $('li',this.objsHolder).removeClass('fs-selected');
+            $('li',this.objsHolder).removeClass('selected');
             this.cover.hide();
         },
         open:function(nowOpts){
@@ -223,19 +224,19 @@
          */
         _dialog:function(level,msg,callback){
             var _this = this,
-                msgBox = $('.fs-msg',this.dialog),
+                msgBox = $('.msg',this.dialog),
                 btns = $('a',this.dialog);
 
-            msgBox.attr('class','fs-msg');
-            msgBox.addClass('fs-' + level);
+            msgBox.attr('class','msg');
+            msgBox.addClass('' + level);
             msgBox.html('<i></i>');
             btns.show();
             if (level == 'prompt') {
                 msgBox.html('<span>'+msg+'</span><input class="v" type="text" />');
-                $('.fs-cancel',this.dialog).hide();
+                $('.cancel',this.dialog).hide();
             }else{
                 if(level != 'confirm'){
-                    $('.fs-cancel',this.dialog).hide();
+                    $('.cancel',this.dialog).hide();
                 }
                 msgBox.html('<span>'+msg+'</span>');
             } 
@@ -249,14 +250,14 @@
                     val = input.val();
                 }
                 if (callback) {
-                    callback($(this).hasClass('fs-confirm'),val);
+                    callback($(this).hasClass('confirm'),val);
                 }
                 _this.dialog.animate({height:0});
             });
         },
         _editFile:function(file){
-            var thumb = $('<img class="fs-image" />').attr('src',file.url),
-                info = $('<ul class="fs-info" />');
+            var thumb = $('<img class="image" />').attr('src',file.url),
+                info = $('<ul class="info" />');
                 info.append('<li>名称：'+file.name+'</li>');
             if (file.size > 0) {
                 info.append('<li>大小：'+file.size+'K</li>');
@@ -267,16 +268,16 @@
             this.edit.html('');
             this.edit.append(info);
             if (this.now.richEditor && file.type == 'file') {
-                var meta = $('<ul class="fs-meta" />');
-                meta.append('<li><label>宽度：<input class="fs-width" type="text" /></label></li>');
-                meta.append('<li><label>高度：<input class="fs-height" type="text" /></label></li>');
-                meta.append('<li><label>链接：<input class="fs-href" value="'+file.url+'" type="text" /></label></li>');
-                meta.append('<li><label>代替文本：<input class="fs-alt" value="'+file.name+'" type="text" /></label></li>');
-                meta.append('<li><label>新标签中打开：<input class="fs-blank" value="" type="checkbox" /></label></li>');
+                var meta = $('<ul class="meta" />');
+                meta.append('<li><label>宽度：<input class="width" type="text" /></label></li>');
+                meta.append('<li><label>高度：<input class="height" type="text" /></label></li>');
+                meta.append('<li><label>链接：<input class="href" value="'+file.url+'" type="text" /></label></li>');
+                meta.append('<li><label>代替文本：<input class="alt" value="'+file.name+'" type="text" /></label></li>');
+                meta.append('<li><label>新标签中打开：<input class="blank" value="" type="checkbox" /></label></li>');
                 this.edit.append(meta);
                 thumb.load(function(){
-                    $('.fs-width').val(this.width);
-                    $('.fs-height').val(this.height);
+                    $('.width').val(this.width);
+                    $('.height').val(this.height);
                 });
             }
             this.edit.prepend(thumb);
@@ -288,7 +289,7 @@
                 loading = $('<img />'),
                 li = $('<li />'),
                 keys = ['name','size','type','time','url','width','height'];
-            li.append('<a class="fs-del" href="#" >×</a>');
+            li.append('<a class="delete" href="#" >×</a>');
             li.css({'width':_this.now.tWidth});
 
             loading.attr('src',_this.now.loadingIcon);
@@ -302,7 +303,7 @@
 
             if (file.type == 'folder') {
                 img.attr('src',_this.now.folderIcon);
-                li.addClass('fs-folder');
+                li.addClass('folder');
             } else{
                 img.attr('src',file.url + _this.now.style);
             }
@@ -327,7 +328,7 @@
             li.append(img);
             if (isNew) {
                 if (file.type == 'file') {
-                    $('.fs-folder:last',_this.objsHolder).after(li);
+                    $('.folder:last',_this.objsHolder).after(li);
                 }else{
                     li.prependTo(_this.objsHolder);
                 }
@@ -358,7 +359,7 @@
             return upyun.util.urlConcat(this.now.api,'action=' + action);
        },
        _g:function(noPrefix){
-           return $('.fs-' + noPrefix,this.cover);
+           return $('.' + noPrefix,this.idoc);
        },
         _setup:function(){
 
@@ -366,66 +367,93 @@
             if (t._g('cover').length > 0 ) {
                 return ;
             }
-            $('head').append('<link rel="stylesheet" href="../themes/'+this._theme+'/style.css" type="text/css" media="screen">');
+            var iframe = document.createElement('iframe');   
+            document.domain = iframe.domain = location.host;
+
+            iframe.id = 'panel';   
+            iframe.name = 'panel';   
+            iframe.width = '100%';   
+            iframe.height = '100%';   
+            iframe.frameBorder="0";
+            //firefox 没这不行
+            iframe.src="javascript:void(0)";
+            this.cover = $('<div style="display:none;" class="cover"></div>');
+            this.cover.css({
+                'background'      : 'url(../themes/default/images/cover.png) no-repeat',
+                'background-size' : 'cover',
+                'position'        : 'fixed',
+                'padding-top'     : '2%',
+                'top'             : '0',
+                'left'            : '0',
+                'width'           : '100%',
+                'height'          : '100%',
+                'z-index'         : 100000
+            });
+            this.cover.appendTo($('body'));
+            this.cover.append(iframe)
+
             var tpl = 
-                    '<div style="display:none;" class="fs-cover">'+
-                        '<div class="fs-panel" style="height:500px;width:1120px;">'+
-                            '<div class="fs-panel-left">'+
-                                '<div id="fs-logo">'+
+                        '<div class="panel" style="height:500px;width:1120px;">'+
+                            '<div class="panel-left">'+
+                                '<div id="logo">'+
                                     '<img src="../themes/default/images/logo.png" width="50">'+
                                 '</div>'+
-                                '<div class="fs-tool-bar">'+
-                                    '<a class="fs-mkdir">'+
+                                '<div class="tool-bar">'+
+                                    '<a class="mkdir">'+
                                         '<i></i>'+
                                         '创建文件夹'+
                                     '</a>'+
-                                    '<a class="fs-upload">'+
+                                    '<a class="upload">'+
                                         '<i></i>'+
                                         '上传图片'+
                                     '</a>'+
                                 '</div>'+
                             '</div>'+
-                            '<div class="fs-panel-right">'+
-                                '<div class="fs-header">'+
-                                    '<div class="fs-header-left" style="width: 950px;">'+
+                            '<div class="panel-right">'+
+                                '<div class="header">'+
+                                    '<div class="header-left" style="width: 950px;">'+
                                         '<h2>又拍图片中心</h2>'+
                                         '<p>请选择一张图片作为你的logo</p>'+
                                     '</div>'+
-                                    '<a class="fs-close" style="margin-left:960px;">关闭</a>'+
+                                    '<a class="close" style="margin-left:960px;">关闭</a>'+
                                 '</div>'+
-                                '<div class="fs-dialog">'+
-                                    '<div class="fs-dialog-wrapper">'+
-                                        '<div class="fs-msg">'+
+                                '<div class="dialog">'+
+                                    '<div class="dialog-wrapper">'+
+                                        '<div class="msg">'+
                                             '<i></i>'+
                                             '<span>确定要删除吗？</span>'+
                                         '</div>'+
-                                        '<div class="fs-dialog-footer">'+
-                                            '<a href="#" class="fs-cancel">取消</a>'+
-                                            '<a href="#" class="fs-confirm">确定</a>'+
+                                        '<div class="dialog-footer">'+
+                                            '<a href="#" class="cancel">取消</a>'+
+                                            '<a href="#" class="confirm">确定</a>'+
                                         '</div>'+
                                     '</div>'+
                                 '</div>'+
-                                '<div class="fs-menu">'+
-                                    '<div class="fs-breadcrumbs">'+
+                                '<div class="menu">'+
+                                    '<div class="breadcrumbs">'+
                                     '</div>'+
-                                    '<div class="fs-search">'+
-                                    '</div>'+
-                                '</div>'+
-                                '<div class="fs-content" style="height:340px;">'+
-                                    '<div class="fs-content-left" style="width:800px">'+
-                                    '</div>'+
-                                    '<div class="fs-content-right" style="margin-left:800px">'+
+                                    '<div class="search">'+
                                     '</div>'+
                                 '</div>'+
-                                '<div class="fs-footer">'+
-                                    '<span>对象总数：<span class="fs-cnt" >125</span></span>'+
-                                    '<a href="#" class="fs-confirm">确定</a>'+
-                                    '<a href="#" class="fs-cancel">取消</a>'+
+                                '<div class="content" style="height:340px;">'+
+                                    '<div class="content-left" style="width:800px">'+
+                                    '</div>'+
+                                    '<div class="content-right" style="margin-left:800px">'+
+                                    '</div>'+
+                                '</div>'+
+                                '<div class="footer">'+
+                                    '<span>对象总数：<span class="cnt" >125</span></span>'+
+                                    '<a href="#" class="confirm">确定</a>'+
+                                    '<a href="#" class="cancel">取消</a>'+
                                 '</div>'+
                             '</div>'+
-                        '</div>'+
-                    '</div>';
-            t.cover       = $(tpl).appendTo($('body'));
+                        '</div>';
+            // ibody.write(tpl);
+            this.idoc = $('#panel').contents();
+            this.idoc.find('head').append('<link rel="stylesheet" href="../themes/'+this._theme+'/style.css" type="text/css" media="screen">');
+            this.idoc.find('body').html(tpl);
+
+            // t.cover       = $(tpl).appendTo($('body'));
             t.panel       = t._g('panel');
             t.layoutLeft  = t._g('panel-right');
             t.toolbar     = t._g('tool-bar');
@@ -442,13 +470,12 @@
             t.edit        = t._g('content-right');
             t.footer      = t._g('footer');
             t.tip         = $('span',this.footer);
-            t.btnOk       = $('.fs-confirm',this.footer);
+            t.btnOk       = $('.confirm',this.footer);
             t.btnCancel   = t._g('cancel');
             t.dialog      = t._g('dialog');
             t._cnt        = t._g('cnt');
             t.mkdir       = t._g('mkdir');
             t.logo        = t._g('logo');
-
             $.fn.extend({
                 _d:function(key){
                     return $(this).attr('data-'+key);
