@@ -46,6 +46,7 @@ upyun.util = {
             panelLogo:'../themes/default/images/logo.png',
             editorIcon:'../themes/default/images/cloud.png',
             folderIcon:'../themes/default/images/Folder.png',
+            loadingIcon:'../themes/default/images/loading.gif',
             tWidth:120,
             tHeight:74,
             multiSelect:false,

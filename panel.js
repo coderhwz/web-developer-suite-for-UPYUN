@@ -285,10 +285,14 @@
         _appendFile:function(file,isNew){
             var _this = this,
                 img = $('<img />'),
+                loading = $('<img />'),
                 li = $('<li />'),
                 keys = ['name','size','type','time','url','width','height'];
             li.append('<a class="fs-del" href="#" >×</a>');
             li.css({'width':_this.now.tWidth});
+
+            loading.attr('src',_this.now.loadingIcon);
+            li.append(loading);
             for (var i = 0; i < keys.length; i++) {
                 var key = keys[i];
                 if (file[key] !== undefined) {
@@ -315,6 +319,7 @@
                                                     _this.now.tWidth,_this.now.tHeight);
                                                     $(this).css(scale);
                                                     $(this).show();
+                                                    loading.remove();
                 });
             
             }
