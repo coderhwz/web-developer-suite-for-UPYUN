@@ -286,11 +286,14 @@
         _appendFile:function(file,isNew){
             var _this = this,
                 img = $('<img />'),
-                loading = $('<img />'),
-                li = $('<li />'),
+                loading = $('<img class="thumb-loading" />'),
+                li = $('<li class="item" />'),
                 keys = ['name','size','type','time','url','width','height'];
             li.append('<a class="delete" href="#" >×</a>');
-            li.css({'width':_this.now.tWidth});
+            li.css({
+                'width':_this.now.tWidth,
+                'height':_this.now.tHeight,
+            });
 
             loading.attr('src',_this.now.loadingIcon);
             li.append(loading);
@@ -313,19 +316,24 @@
             if (file.width && file.height) {
                 var scale = upyun.util.getScale(file.width,file.height ,
                                                 _this.now.tWidth,_this.now.tHeight);
+                scale = {width:scale.width*0.9,height:scale.height*0.9}
                 img.css(scale);
             }else{
                 img.load(function(){
                     var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
                                                     _this.now.tWidth,_this.now.tHeight);
-                                                    $(this).css(scale);
-                                                    $(this).show();
-                                                    loading.remove();
+                    scale = {width:scale.width*0.9,height:scale.height*0.9}
+                    $(this).css(scale);
+                    $(this).show();
+                    loading.remove();
                 });
             
             }
             img.hide();
             li.append(img);
+            if (file.type == 'folder') {
+                li.append('<p>'+file.name+'</p>');
+            }
             if (isNew) {
                 if (file.type == 'file') {
                     $('.folder:last',_this.objsHolder).after(li);
