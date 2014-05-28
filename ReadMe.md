@@ -1,9 +1,15 @@
 # 又拍开发者套件
 
 ## 简介
-`又拍开发者套件`希望能够使开发者和用户更方便的使用又拍云服务。套件前端基于jQuery,
-后端封装了`upyun.class.php`,前后端约定以某一简单协议进行交互,目前支持`jQuery调用`, `百度UEditor`和`KindEditor`
+`又拍开发者套件`希望能够使开发者和用户更方便的使用又拍云服务，前端提供统一（用户一致性体验）的又拍图片管理器，
+可以进行文件夹、文件管理和图片选择，将图片地址插入指定容器，管理器可定制主题后端目前是对又拍官方PHP SDK 进行
+封装,类命为`UpCloud`，封装后，开发者操作变得更简单，仅需调用`takeOver`方法即可,`UpCloud`使用了迷你“mvc”,结构
+还算清晰，另外封装中提供了事件监听，详情请看下文，后端利用了php “为web而生”的特点,所以无框架依赖，有php的地方
+就可以使用（满足又拍php sdk运行环境要求的情况下）
+
+目前支持`jQuery调用`, `百度UEditor`和`KindEditor`
 目前[GitCafe](https://gitcafe.com/coderhwz/web-developer-suite-for-UPYUN)是本项目唯一公开的代码托管，可以尽情提交工单^_^。前往[项目DEMO](http://www.coderhwz.com/upyun/example)
+
 
 ![示例图](http://www.coderhwz.com/upyun/screenshot.png)
 
