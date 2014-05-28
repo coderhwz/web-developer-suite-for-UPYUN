@@ -14,7 +14,7 @@ a {
     color: #aaa;
     font-size: 14px;
 }
-.fs-cover {
+.cover {
     background: url(images/cover.png) no-repeat;
     background-size: cover;
     position: relative;
@@ -28,27 +28,27 @@ a {
 	height: 100%;
     z-index:100000;
 }
-.fs-panel {
+.panel {
     margin: 0 auto;
     overflow: hidden;
 }
-.fs-panel-left {
+.panel-left {
     width: 70px;
     float: left;
     background-color: #fff;
     height: 100%;
 }
-#fs-logo {
+#logo {
     padding-top:10px;
     height: 60px;
     line-height: 60px;
     text-align: center;
     border-bottom: 1px solid #e3e3e3;
 }
-#fs-logo img {
+#logo img {
     vertical-align: middle;
 }
-.fs-tool-bar a {
+.tool-bar a {
     border-bottom: 1px solid #e3e3e3;
     font-size: 12px;
     color: #aaa;
@@ -57,30 +57,30 @@ a {
     padding-bottom: 8px;
     cursor: pointer;
 }
-.fs-tool-bar a i {
+.tool-bar a i {
     background: url(images/fs_icon.png) no-repeat;
     display: block;
     height: 40px;
 }
-.fs-tool-bar a.fs-mkdir i {
+.tool-bar a.mkdir i {
     background-position: 15px -10px;
 }
-.fs-tool-bar a.fs-upload i {
+.tool-bar a.upload i {
     background-position: 15px -55px;
 }
-.fs-panel-right {
+.panel-right {
     margin-left: 90px;
 }
-.fs-header {
+.header {
     height: 40px;
     overflow: hidden;
     line-height: 40px;
 }
-.fs-header-left {
+.header-left {
     float: left;
     background-color: #fff;
 }
-.fs-header-left h2 {
+.header-left h2 {
     background-color: #638e43;
     padding: 0 12px;
     text-align: center;
@@ -89,28 +89,28 @@ a {
     height:40px;
     line-height:40px;
 }
-.fs-header-left p {
+.header-left p {
     margin-left: 15%;
     color: #aaa;
 }
-.fs-close {
+.close {
     background-color: #c9452b;
     display: block;
     text-align: center;
     color: #fff;
     cursor: pointer;
 }
-.fs-content {
+.content {
     background-color: #fff;
     overflow: hidden;
 }
-.fs-content-left {
+.content-left {
     float: left;
     height: 100%;
     overflow: auto;
     padding: 12px;
 }
-.fs-content-right {
+.content-right {
     border-left: 1px solid #e3e3e3;
     height: 100%;
     background-color: #f1f1f1;
@@ -118,67 +118,67 @@ a {
     padding: 10px 20px;
 	margin:0 auto;
 }
-.fs-content-right img {
+.content-right img {
 	width:120px;
 }
-.fs-content-right ul {
+.content-right ul {
 	list-style:none;
 	padding:5px 0;
 }
-.fs-info,.fs-meta {
+.info,.meta {
 	color:#aaa;
 	font-size:12px;
 }
-.fs-meta input{
+.meta input{
     width:97%;
 }
-.fs-menu {
+.menu {
     margin-top: 20px;
     border-bottom: 1px solid #e3e3e3;
     height: 50px;
     overflow: hidden;
     background-color: #fff;
 }
-.fs-breadcrumbs {
+.breadcrumbs {
     float: left;
     margin: 12px;
 }
-.fs-breadcrumbs a {
+.breadcrumbs a {
     display: inline-block;
     padding: 5px 8px;
     border: 1px solid #e8e8e8;
     background-color: #f1f1f1;
     margin-right: 5px;
 }
-.fs-search {
+.search {
     float: right;
 }
-.fs-footer {
+.footer {
     border-top: 1px solid #e3e3e3;
     height: 50px;
     background-color: #fff;
     overflow: hidden;
 }
-.fs-footer span {
+.footer span {
     line-height: 50px;
     color: #aaa;
     font-size: 14px;
     margin-left: 12px;
 }
-.fs-footer a {
+.footer a {
     float: right;
     margin: 8px 10px;
     padding: 8px 30px;
     color: #fff;
 }
-a.fs-confirm {
+a.confirm {
     background-color: #d77b31;
     color: #fff;
 }
-a.fs-cancel {
+a.cancel {
     background-color: #7d7d7d;
 }
-.fs-content-left li{
+.content-left li{
 	display:inline-block;
 	margin:0 auto;
 	padding:2px 3px;
@@ -189,8 +189,8 @@ a.fs-cancel {
 .cur-bread{
 	background-color:#fff !important;
 }
-.fs-alert,
-.fs-dialog {
+.alert,
+.dialog {
 	width:200px;
 	height:0;
 	overflow:hidden;
@@ -200,7 +200,7 @@ a.fs-cancel {
 	left:40%;
 	z-index:1;
 }
-.fs-dialog-wrapper{
+.dialog-wrapper{
     right: 0;
 	bottom:0px;
     left: 0;
@@ -209,15 +209,16 @@ a.fs-cancel {
     text-align: center;
     border: 1px solid #f8f8f8;
 }
-.fs-msg {
+.msg {
     margin: 30px 0;
 }
-.fs-dialog-wrapper a {
+
+.dialog-wrapper a {
     padding: 5px 10px;
     margin-right: 10px;
     color: #fff;
 }
-.fs-del{
+.delete{
     display:none;
 	position:absolute;
 	top:0;
@@ -232,14 +233,21 @@ a.fs-cancel {
     border-radius: 10px;
     border: 1px solid #f1f1f1;
 }
-.fs-hover{
+.hover{
     background-color:#5f9ea0;
 }
-.fs-hover .fs-del{
+.hover .delete{
     display:block;
 }
-.fs-selected{
+.selected{
     background-color:#5f9ea0;
+}
+.thumb-loading{
+    position:absolute;
+    top:40%;
+}
+.item p{
+    font-size:12px;
 }
 /* .ke-icon-upyun {
       background-image: url(./skins/default.gif);

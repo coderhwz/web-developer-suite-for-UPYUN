@@ -312,7 +312,7 @@
             img.load(function(){
                 var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
                                                 _this.now.tWidth,_this.now.tHeight);
-                scale = {width:scale.width*0.9,height:scale.height*0.9}
+                scale = {width:scale.width*0.9,height:scale.height*0.9};
                 $(this).css(scale);
                 $(this).show();
                 loading.remove();
@@ -360,13 +360,13 @@
             if (file.width && file.height) {
                 var scale = upyun.util.getScale(file.width,file.height ,
                                                 _this.now.tWidth,_this.now.tHeight);
-                scale = {width:scale.width*0.9,height:scale.height*0.9}
+                scale = {width:scale.width*0.9,height:scale.height*0.9};
                 img.css(scale);
             }else{
                 img.load(function(){
                     var scale = upyun.util.getScale(this.naturalWidth,this.naturalHeight ,
                                                     _this.now.tWidth,_this.now.tHeight);
-                    scale = {width:scale.width*0.9,height:scale.height*0.9}
+                    scale = {width:scale.width*0.9,height:scale.height*0.9};
                     $(this).css(scale);
                     $(this).show();
                     loading.remove();
@@ -442,7 +442,7 @@
                 'z-index'         : 100000
             });
             this.cover.appendTo($('body'));
-            this.cover.append(iframe)
+            this.cover.append(iframe);
 
             var tpl = 
                         '<div class="panel" style="height:500px;width:1120px;">'+

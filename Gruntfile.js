@@ -16,6 +16,7 @@ module.exports = function(grunt) {
 			verify: {
 				options: {
 					'-W083': true,
+					'-W107': true,
 				},
 				src: ['uploader.js','panel.js','upyun.js','jquery.upyun.js','ueditor.js','kindeditor.js'],
 			},
